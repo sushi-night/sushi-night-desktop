@@ -1,10 +1,14 @@
 export default interface dbSchema {
-  auth?: {
-    token?: string;
-    expiracyDate?: string;
-  };
-  userPrefs?: {
-    darkMode?: boolean;
-    useTorrent?: boolean;
-  };
+  auth?: Auth;
+  userPrefs?: UserPrefs;
 }
+
+export type UserPrefs = {
+  darkMode?: boolean;
+  useTorrent?: boolean;
+};
+
+export type Auth = {
+  token?: string;
+  expiracyDate?: string;
+};
