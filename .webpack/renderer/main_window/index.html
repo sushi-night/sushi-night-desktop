@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <header id="titlebar">
+      <script>
+        const customTitlebar = require("custom-electron-titlebar");
+
+        new customTitlebar.Titlebar({
+          backgroundColor: customTitlebar.Color.fromHex("#444"),
+          menu: false,
+        });
+      </script>
+    </header>
+    <div id="root"></div>
+  <script src="/main_window/index.js"></script></body>
+</html>
