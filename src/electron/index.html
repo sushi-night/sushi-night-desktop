@@ -4,16 +4,19 @@
     <meta charset="UTF-8" />
   </head>
   <body>
-    <header id="titlebar">
-      <script>
-        const customTitlebar = require("custom-electron-titlebar");
+    <script>
+      const customTitlebar = require("custom-electron-titlebar");
 
-        new customTitlebar.Titlebar({
-          backgroundColor: customTitlebar.Color.fromHex("#444"),
-          menu: false,
-        });
-      </script>
-    </header>
+      new customTitlebar.Titlebar({
+        backgroundColor: customTitlebar.Color.fromHex("#444"),
+        menu: false,
+      });
+    </script>
     <div id="root"></div>
   </body>
 </html>
+<style>
+  .titlebar{
+    position: sticky;
+  }
+</style>

@@ -18,6 +18,7 @@ const createWindow = (): void => {
     webPreferences: {
       nodeIntegration: true,
       enableRemoteModule: true,
+      contextIsolation: false,
     },
     titleBarStyle: "hidden",
     frame: false,

@@ -9,6 +9,10 @@ export const authenticationURL = authenticationEndpoint(
 
 export const redirectURL = "" //TODO: replace this with the API endpoint running in node, for now this will work.
 
-export const images = {
-  appLogo: require("../../static/logo.png")
-};
+import appLogo from "../../static/logo.png";
+import serverStarting from "../../static/serverStarting.gif";
+
+export {
+  appLogo,
+  serverStarting
+}

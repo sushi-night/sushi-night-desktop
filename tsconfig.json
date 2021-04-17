@@ -13,9 +13,8 @@
     "paths": {
       "*": ["node_modules/*"]
     },
-    "jsx": "react"
+    "jsx": "react",
+    "typeRoots": ["custom.d.ts"]
   },
-  "include": [
-    "src/**/*"
-  ]
+  "include": ["src/**/*", "custom.d.ts"]
 }
