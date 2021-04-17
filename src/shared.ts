@@ -34,6 +34,7 @@ export const useAuth = async (): Promise<Auth> => {
 };
 
 export const setPrefs = async (userPrefs: UserPrefs) => {
+  prefs = userPrefs;
   await store.write({
     userPrefs,
   });
