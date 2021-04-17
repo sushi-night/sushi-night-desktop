@@ -1,0 +1,111 @@
+query StatsAndFavourites($userId: Int!) {
+  User(id: $userId) {
+    statistics {
+      anime {
+        count
+        meanScore
+        standardDeviation
+        minutesWatched
+        episodesWatched
+        genrePreview: genres(limit: 10, sort: COUNT_DESC) {
+          genre
+          count
+        }
+      }
+      manga {
+        count
+        meanScore
+        standardDeviation
+        chaptersRead
+        volumesRead
+        genrePreview: genres(limit: 10, sort: COUNT_DESC) {
+          genre
+          count
+        }
+      }
+    }
+    favourites {
+      anime {
+        edges {
+          favouriteOrder
+          node {
+            id
+            type
+            status(version: 2)
+            format
+            isAdult
+            bannerImage
+            title {
+              userPreferred
+            }
+            coverImage {
+              large
+            }
+            startDate {
+              year
+            }
+          }
+        }
+      }
+      manga {
+        edges {
+          favouriteOrder
+          node {
+            id
+            type
+            status(version: 2)
+            format
+            isAdult
+            bannerImage
+            title {
+              userPreferred
+            }
+            coverImage {
+              large
+            }
+            startDate {
+              year
+            }
+          }
+        }
+      }
+      characters {
+        edges {
+          favouriteOrder
+          node {
+            id
+            name {
+              full
+            }
+            image {
+              large
+            }
+          }
+        }
+      }
+      staff {
+        edges {
+          favouriteOrder
+          node {
+            id
+            name {
+              full
+            }
+            image {
+              large
+            }
+          }
+        }
+      }
+      studios {
+        edges {
+          favouriteOrder
+          node {
+            id
+            name
+          }
+        }
+      }
+    }
+  }
+}
