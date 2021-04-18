@@ -6,7 +6,13 @@ import { client } from "./util/apollo";
 import { ChakraProvider } from "@chakra-ui/react";
 
 const App: React.FC = () => {
-  return <Routes />;
+  return (
+    <ApolloProvider client={client}>
+      <ChakraProvider>
+        <Routes />
+      </ChakraProvider>
+    </ApolloProvider>
+  );
 };
 
 export default App;

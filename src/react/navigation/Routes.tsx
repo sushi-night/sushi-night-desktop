@@ -5,10 +5,11 @@ import {
   Route,
   Switch,
 } from "react-router-dom";
-import { Account } from "./Account";
-import { Home } from "./Home";
-import { Login } from "./Login";
-import { Settings } from "./Settings";
+import { Account } from "./pages/Account";
+import { AnimeDetails } from "./pages/AnimeDetails";
+import { Home } from "./pages/Home";
+import { Login } from "./pages/Login";
+import { Settings } from "./pages/Settings";
 
 export const Routes: React.FC = () => {
   return (
@@ -19,6 +20,8 @@ export const Routes: React.FC = () => {
           <Route exact path="/login" component={Login} />
           <Route exact path="/account" component={Account} />
           <Route exact path="/settings" component={Settings} />
+          <Route path="/animeDetails" component={AnimeDetails} />
+          <Route path="/watch" component={AnimeDetails} />
         </Switch>
         <nav>
           <div>
