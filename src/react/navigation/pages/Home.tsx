@@ -1,5 +1,6 @@
+import { Heading } from "@chakra-ui/layout";
 import React from "react";
 
 export const Home: React.FC = () => {
-  return (<div>Home</div>);
+  return (<Heading color="black">HOME</Heading>);
 };

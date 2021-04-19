@@ -1,6 +1,5 @@
-require("./server");
 import { app, BrowserWindow, shell } from "electron";
-//require("./server");
+require("./server");
 
 declare const MAIN_WINDOW_WEBPACK_ENTRY: any;
 
@@ -20,8 +19,6 @@ const createWindow = (): void => {
       enableRemoteModule: true,
       contextIsolation: false,
     },
-    titleBarStyle: "hidden",
-    frame: false,
     autoHideMenuBar: true,
     center: true,
   });
@@ -62,4 +59,3 @@ app.on("activate", () => {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and import them here.
-require("../shared");

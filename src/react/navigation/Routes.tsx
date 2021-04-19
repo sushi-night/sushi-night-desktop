@@ -1,47 +1,29 @@
-import React from "react";
-import {
-  MemoryRouter as Router,
-  Link as RouterLink,
-  Route,
-  Switch,
-} from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { MemoryRouter as Router, Route, Switch } from "react-router-dom";
 import { Account } from "./pages/Account";
 import { AnimeDetails } from "./pages/AnimeDetails";
 import { Home } from "./pages/Home";
-import { Login } from "./pages/Login";
+import { Welcome } from "./pages/Welcome";
 import { Settings } from "./pages/Settings";
+import { Watch } from "./pages/Watch";
+import { useWelcomeStore } from "../zustand";
 
+const getFirstVisit = (): boolean => {
+  return localStorage.getItem("welcome") == "1" ? false : true;
+};
+
+//will use global state with zustand instead of route parameters.
 export const Routes: React.FC = () => {
+  const { welcome } = useWelcomeStore();
   return (
     <Router>
-      <div>
-        <Switch>
-          <Route exact path="/" component={Home} />
-          <Route exact path="/login" component={Login} />
-          <Route exact path="/account" component={Account} />
-          <Route exact path="/settings" component={Settings} />
-          <Route path="/animeDetails" component={AnimeDetails} />
-          <Route path="/watch" component={AnimeDetails} />
-        </Switch>
-        <nav>
-          <div>
-            <ul>
-              <li>
-                <RouterLink to="/">Home</RouterLink>
-              </li>
-              <li>
-                <RouterLink to="/login">Login</RouterLink>
-              </li>
-              <li>
-                <RouterLink to="/account">Account</RouterLink>
-              </li>
-              <li>
-                <RouterLink to="/settings">Settings</RouterLink>
-              </li>
-            </ul>
-          </div>
-        </nav>
-      </div>
+      <Switch>
+        <Route exact path="/" component={welcome ? Home : Welcome} />
+        <Route exact path="/account" component={Account} />
+        <Route exact path="/settings" component={Settings} />
+        <Route exact path="/animeDetails" component={AnimeDetails} />
+        <Route exact path="/watch" component={Watch} />
+      </Switch>
     </Router>
   );
 };

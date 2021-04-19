@@ -1,11 +1,26 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Routes } from "./navigation/Routes";
-import { useApi } from "./util/axios";
 import { ApolloProvider } from "@apollo/client";
 import { client } from "./util/apollo";
 import { ChakraProvider } from "@chakra-ui/react";
+import { ipcRenderer } from "electron";
+import { setApi } from "./util/axios";
+import { useServerStore, useWelcomeStore } from "./zustand";
 
 const App: React.FC = () => {
+  const { getWelcome } = useWelcomeStore();
+  const { getServer, setServer } = useServerStore();
+
+  ipcRenderer.on("RESPONSE_API_ENDPOINT", (_: any, arg: any) => {
+    setApi(parseInt(arg));
+    setServer("loaded");
+  });
+
+  useEffect(() => {
+    getWelcome(); //fetch from localStorage
+    getServer(); //send message with ipcRenderer
+  }, []);
+
   return (
     <ApolloProvider client={client}>
       <ChakraProvider>

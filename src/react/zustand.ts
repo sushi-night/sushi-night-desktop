@@ -1,0 +1,44 @@
+import { ipcRenderer } from "electron";
+import create, { State } from "zustand";
+
+interface WelcomeState extends State {
+  welcome: boolean;
+  setWelcome: (welcome: boolean) => void;
+  getWelcome: () => void;
+}
+
+type svState = "loaded" | "loading";
+
+interface ServerState extends State {
+  server: svState;
+  setServer: (state: svState) => void;
+  getServer: () => void;
+}
+
+export const useWelcomeStore = create<WelcomeState>((set) => ({
+  welcome: false,
+  getWelcome: () => {
+    const w = localStorage.getItem("welcome") == "1" ? true : false;
+    set((_) => ({
+      welcome: w,
+    }));
+  },
+  setWelcome: (welcome: boolean) => {
+    localStorage.setItem("welcome", welcome ? "1" : "0"); //don't show the welcome page again
+    set((_) => ({
+      welcome,
+    }));
+  },
+}));
+
+export const useServerStore = create<ServerState>((set) => ({
+  server: "loading",
+  getServer: () => {
+    ipcRenderer.send("GET_API_ENDPOINT");
+  },
+  setServer: (state: svState) => {
+    set((_) => ({
+      server: state,
+    }));
+  },
+}));
