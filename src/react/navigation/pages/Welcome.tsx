@@ -7,7 +7,6 @@ import Icon from "@chakra-ui/icon";
 import { Button } from "@chakra-ui/button";
 import { useServerStore, useWelcomeStore } from "../../zustand";
 import { ipcRenderer } from "electron";
-import { setAuth } from "../../../shared";
 
 export const Welcome: React.FC = () => {
   const { setWelcome } = useWelcomeStore();

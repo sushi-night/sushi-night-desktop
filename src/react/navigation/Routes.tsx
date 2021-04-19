@@ -8,10 +8,6 @@ import { Settings } from "./pages/Settings";
 import { Watch } from "./pages/Watch";
 import { useWelcomeStore } from "../zustand";
 
-const getFirstVisit = (): boolean => {
-  return localStorage.getItem("welcome") == "1" ? false : true;
-};
-
 //will use global state with zustand instead of route parameters.
 export const Routes: React.FC = () => {
   const { welcome } = useWelcomeStore();

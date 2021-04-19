@@ -1,7 +1,16 @@
-import { Auth, UserPrefs } from "./storage/dbSchema";
 import { factory } from "electron-json-config";
 
 const store = factory();
+
+export type UserPrefs = {
+  darkMode?: boolean;
+  useTorrent?: boolean;
+};
+
+export type Auth = {
+  token?: string;
+  expiracyDate?: string;
+};
 
 var auth: Auth;
 var prefs: UserPrefs;
