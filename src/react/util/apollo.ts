@@ -18,5 +18,9 @@ const authLink = setContext((_, { headers }) => {
 export const client = new ApolloClient({
   uri: ANILIST_ENDPOINT,
   cache: new InMemoryCache(),
-  link: authLink
+  link: authLink,
+  headers: {
+    "Content-Type": "application/json",
+    Accept: "application/json",
+  },
 });
