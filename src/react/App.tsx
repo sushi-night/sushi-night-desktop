@@ -9,16 +9,17 @@ import { useServerStore, useWelcomeStore } from "./zustand";
 
 const App: React.FC = () => {
   const { getWelcome } = useWelcomeStore();
-  const { getServer, setServer } = useServerStore();
+  const { getServer, setServer, server } = useServerStore();
 
   ipcRenderer.on("RESPONSE_API_ENDPOINT", (_: any, arg: any) => {
     setApi(parseInt(arg));
     setServer("loaded");
+    ipcRenderer.removeAllListeners("RESPONSE_API_ENDPOINT");
   });
 
   useEffect(() => {
     getWelcome(); //fetch from localStorage
-    getServer(); //send message with ipcRenderer
+    getServer(server); //send message with ipcRenderer
   }, []);
 
   return (

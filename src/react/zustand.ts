@@ -12,7 +12,7 @@ type svState = "loaded" | "loading";
 interface ServerState extends State {
   server: svState;
   setServer: (state: svState) => void;
-  getServer: () => void;
+  getServer: (state: svState) => void;
 }
 
 export const useWelcomeStore = create<WelcomeState>((set) => ({
@@ -33,8 +33,10 @@ export const useWelcomeStore = create<WelcomeState>((set) => ({
 
 export const useServerStore = create<ServerState>((set) => ({
   server: "loading",
-  getServer: () => {
-    ipcRenderer.send("GET_API_ENDPOINT");
+  getServer: (server: svState) => {
+    if (server !== "loaded") {
+      ipcRenderer.send("GET_API_ENDPOINT");
+    }
   },
   setServer: (state: svState) => {
     set((_) => ({

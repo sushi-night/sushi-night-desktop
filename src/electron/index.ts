@@ -1,5 +1,6 @@
-import { app, BrowserWindow, shell } from "electron";
-require("./server");
+import { app, BrowserWindow, ipcMain, shell } from "electron";
+import { setAuth } from "../shared";
+import { authenticationURL } from "../Constants";
 
 declare const MAIN_WINDOW_WEBPACK_ENTRY: any;
 
@@ -59,3 +60,38 @@ app.on("activate", () => {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and import them here.
+require("./server");
+require("../shared"); //initialize store object
+
+ipcMain.on("START_AUTH", (event, _) => {
+  const authenticationWindow = new BrowserWindow({
+    height: 600,
+    width: 400,
+    webPreferences: {
+      nodeIntegration: true,
+      enableRemoteModule: true,
+      contextIsolation: false,
+    },
+    autoHideMenuBar: true,
+    center: true,
+    alwaysOnTop: true,
+    maximizable: false,
+    minimizable: false,
+    skipTaskbar: true,
+    resizable: false,
+  });
+
+  authenticationWindow.loadURL(authenticationURL);
+
+  authenticationWindow.webContents.on("will-redirect", async (__, url) => {
+    const token = url.split("#access_token=").pop().split("&")[0];
+    await setAuth(token);
+    event.reply("END_AUTH", "will-redirect");
+    authenticationWindow.close();
+  });
+
+  authenticationWindow.on("close", () => {
+    event.reply("END_AUTH", "close");
+  });
+});
+

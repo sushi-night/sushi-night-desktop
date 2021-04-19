@@ -1,9 +1,10 @@
 import { app } from "electron";
 import Datastore from "nedb-promises";
-import dbSchema from "./dbSchema";
+import dbSchema, { Auth, UserPrefs } from "./dbSchema";
 
 export class Store {
-  dbPath: string = app.getAppPath() + "/storage.db";
+  dbPath: string =
+    (app || require("electron").remote.app).getAppPath() + "/storage.db"; //when ./shared is imported from frontend app is not defined? temporary fix for now, will check later.
   schema?: dbSchema;
   db?: Datastore;
 
@@ -14,16 +15,26 @@ export class Store {
     });
   }
 
-  async write(data: dbSchema) { //find a better way to do this?
+  async write(data: dbSchema) {
     if (data.auth) {
-      await this.db.update("auth", data.auth, { upsert: true });
+      await this.db.update<Auth>(
+        { "auth.token": /[^]/g },
+        { auth: data.auth },
+        { upsert: true }
+      );
     }
     if (data.userPrefs) {
-      await this.db.update("userPrefs", data.userPrefs, { upsert: true });
+      await this.db.update<UserPrefs>(
+        { "userPreferences.darkMode": /[^]/g },
+        { userPreferences: data.userPrefs },
+        {
+          upsert: true,
+        }
+      );
     }
   }
 
-  async read<T>(key:string) {
-    return await this.db.findOne<T>({key});
+  async read<T>(query: Object) {
+    return await this.db.findOne<T>(query);
   }
 }
