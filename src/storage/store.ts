@@ -23,7 +23,7 @@ export class Store {
     }
   }
 
-  async read(key:string) {
-    return await this.db.findOne({key});
+  async read<T>(key:string) {
+    return await this.db.findOne<T>({key});
   }
 }

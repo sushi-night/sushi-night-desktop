@@ -1,15 +1,23 @@
 import { Image } from "@chakra-ui/image";
 import { Box, Flex, Text } from "@chakra-ui/layout";
-import React from "react";
-import { appLogo, authenticationURL } from "../../util/Constants";
+import React, { useState } from "react";
+import { appLogo } from "../../util/Constants";
 import { GoMarkGithub } from "react-icons/go";
 import Icon from "@chakra-ui/icon";
 import { Button } from "@chakra-ui/button";
 import { useServerStore, useWelcomeStore } from "../../zustand";
+import { ipcRenderer } from "electron";
 
 export const Welcome: React.FC = () => {
   const { setWelcome } = useWelcomeStore();
   const { server } = useServerStore();
+  const [loggingIn, setLoggingIn] = useState<boolean>(false);
+
+  ipcRenderer.on("END_AUTH", (_: any, arg: any) => {
+    //this event fires when the auth window gets closed.
+    setLoggingIn(false);
+    setWelcome(true);
+  });
 
   return (
     <Flex flexDirection="column" height="100%" bgColor="black">
@@ -46,11 +54,11 @@ export const Welcome: React.FC = () => {
       </Box>
       <Flex alignSelf="center" marginTop={5} flexDirection="column">
         <Button
-          isLoading={server == "loading"}
+          isLoading={server == "loading" || loggingIn}
           colorScheme="teal"
           onClick={() => {
-            window.open(authenticationURL);
-            setWelcome(true); //fire this only after succesfully logging in.
+            setLoggingIn(true);
+            ipcRenderer.send("START_AUTH");
           }}
         >
           Login with Anilist

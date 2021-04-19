@@ -19,6 +19,7 @@ export const Routes: React.FC = () => {
     <Router>
       <Switch>
         <Route exact path="/" component={welcome ? Home : Welcome} />
+        <Route exact path="/login" component={Welcome} />
         <Route exact path="/account" component={Account} />
         <Route exact path="/settings" component={Settings} />
         <Route exact path="/animeDetails" component={AnimeDetails} />
