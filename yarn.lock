@@ -3899,6 +3899,11 @@ electron-installer-redhat@^3.2.0:
     word-wrap "^1.2.3"
     yargs "^16.0.2"
 
+electron-json-config@^2.0.0-beta:
+  version "2.0.0-beta"
+  resolved "https://registry.yarnpkg.com/electron-json-config/-/electron-json-config-2.0.0-beta.tgz#d4249be307fc6a00de1dc375b7385cb0ac9b3dfe"
+  integrity sha512-vCzsHEx09kbRCy7E+iKTOZSITvCi+1aFt00CGUJuFBsb78eqisdXGmNgBFRWWHjp/gePxUNwIzncqb2io6ObBg==
+
 electron-notarize@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/electron-notarize/-/electron-notarize-1.0.0.tgz#bc925b1ccc3f79e58e029e8c4706572b01a9fd8f"

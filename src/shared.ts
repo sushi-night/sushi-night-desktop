@@ -1,12 +1,12 @@
 import { Auth, UserPrefs } from "./storage/dbSchema";
-import { Store } from "./storage/store";
+import { factory } from "electron-json-config";
 
-const store = new Store();
+const store = factory();
 
 var auth: Auth;
 var prefs: UserPrefs;
 
-export const setAuth = async (token: string) => {
+export const setAuth = (token: string) => {
   const date = new Date();
   //anilist tokens expire in one year (365 days).
   //set to one day before to avoid timezone related issues.
@@ -16,36 +16,24 @@ export const setAuth = async (token: string) => {
   auth = { token, expiracyDate };
 
   //persist auth object
-  await store.write({
-    auth,
-  });
+  store.set<Auth>("auth", auth);
 };
 
-export const useAuth = async (): Promise<Auth> => {
+export const useAuth = (): Auth => {
   if (!auth) {
-    const saved = await store.read<Auth>({ auth: {} });
-    if (saved) {
-      auth = saved;
-    }
+    auth = store.get<Auth>("auth");
   }
-
   return auth;
 };
 
-export const setPrefs = async (userPrefs: UserPrefs) => {
+export const setPrefs = (userPrefs: UserPrefs) => {
   prefs = userPrefs;
-  await store.write({
-    userPrefs,
-  });
+  store.set<UserPrefs>("userPreferences", userPrefs);
 };
 
-export const usePrefs = async (): Promise<UserPrefs> => {
+export const usePrefs = (): UserPrefs => {
   if (!prefs) {
-    const saved = await store.read<UserPrefs>({ userPreferences: {} });
-    if (saved) {
-      prefs = saved;
-    }
+    prefs = store.get<UserPrefs>("userPreferences");
   }
-
   return prefs;
 };

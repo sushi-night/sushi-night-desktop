@@ -33,8 +33,4 @@ export class Store {
       );
     }
   }
-
-  async read<T>(query: Object) {
-    return await this.db.findOne<T>(query);
-  }
 }

@@ -85,7 +85,7 @@ ipcMain.on("START_AUTH", (event, _) => {
 
   authenticationWindow.webContents.on("will-redirect", async (__, url) => {
     const token = url.split("#access_token=").pop().split("&")[0];
-    await setAuth(token);
+    setAuth(token);
     event.reply("END_AUTH", "will-redirect");
     authenticationWindow.close();
   });
