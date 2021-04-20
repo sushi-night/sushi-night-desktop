@@ -116,7 +116,6 @@ const NavSearch: React.FC = () => {
                 onChange={(event) => setSearch(event.target.value)}
               ></Input>
             </InputGroup>
-            {/* <Flex alignContent="center" alignItems="center"></Flex> */}
           </ModalBody>
         </ModalContent>
       </Modal>
