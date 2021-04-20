@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Routes } from "./navigation/Routes";
 import { ApolloProvider } from "@apollo/client";
 import { client } from "./util/apollo";

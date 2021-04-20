@@ -25,7 +25,7 @@ export const Welcome: React.FC = () => {
   }
 
   return (
-    <Flex flexDirection="column" height="100%" bgColor="black">
+    <Flex flexDirection="column" height="100vh" bgColor="black">
       <Flex alignSelf="center" position="relative" marginTop={4}>
         <Image src={appLogo} height="xs" rounded="full" border="2px" />
         <Button

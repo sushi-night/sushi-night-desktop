@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@apollo/client": "^3.3.15",
+    "@chakra-ui/icons": "^1.0.11",
     "@chakra-ui/react": "^1.5.1",
     "@emotion/react": "^11",
     "@emotion/styled": "^11",
@@ -25,6 +26,7 @@
     "electron-json-config": "^2.0.0-beta",
     "electron-squirrel-startup": "^1.0.0",
     "express": "^4.17.1",
+    "focus-visible": "^5.2.0",
     "framer-motion": "^4",
     "get-port": "^5.1.1",
     "graphql": "^15.5.0",

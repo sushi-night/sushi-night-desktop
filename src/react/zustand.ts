@@ -15,6 +15,12 @@ interface ServerState extends State {
   getServer: (state: svState) => void;
 }
 
+interface AuthState extends State {
+  authenticated: boolean;
+  setAuthenticated: (state: boolean) => void;
+}
+
+
 export const useWelcomeStore = create<WelcomeState>((set) => ({
   welcome: false,
   getWelcome: () => {
@@ -41,6 +47,15 @@ export const useServerStore = create<ServerState>((set) => ({
   setServer: (state: svState) => {
     set((_) => ({
       server: state,
+    }));
+  },
+}));
+
+export const useAuthStore = create<AuthState>((set) => ({
+  authenticated: false,
+  setAuthenticated: (authenticated: boolean) => {
+    set((_) => ({
+      authenticated,
     }));
   },
 }));
