@@ -96,8 +96,6 @@ query PaginatedSearch(
       status(version: 2)
       episodes
       duration
-      chapters
-      volumes
       genres
       isAdult
       averageScore

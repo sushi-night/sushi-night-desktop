@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Box,
   Flex,
@@ -16,18 +16,24 @@ import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-  Divider,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  Input,
+  ModalBody,
+  InputGroup,
+  InputLeftElement,
+  Button,
 } from "@chakra-ui/react";
-import { useMeQuery } from "../generated/graphql";
+import { useMeQuery, useSearchQuery } from "../generated/graphql";
 import { useAuthStore } from "../zustand";
 import { Link as RLink } from "react-router-dom";
-import { AiFillSetting, AiOutlineDown } from "react-icons/ai";
+import { AiFillSetting, AiOutlineDown, AiOutlineSearch } from "react-icons/ai";
 import { FiLogOut } from "react-icons/fi";
 import { appLogo } from "../../Constants";
 import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
 import { FaUserAlt } from "react-icons/fa";
 import { IconType } from "react-icons";
-import { ColorModeSwitcher } from "./ColorModeSwitcher";
 
 interface NavItem {
   label: string;
@@ -61,7 +67,64 @@ const NAV_ITEMS: Array<NavItem> = [
   },
 ];
 
-export const Navbar = () => {
+const NavSearch: React.FC = () => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [search, setSearch] = useState("");
+
+  const { loading, data, error } = useSearchQuery({
+    variables: { search },
+    skip: search === "",
+  });
+
+  if (data) {
+    console.log(data);
+  }
+  if (error) {
+    console.log(error);
+  }
+  if (loading) {
+    console.log(loading);
+  }
+
+  return (
+    <Box>
+      <IconButton
+        onClick={onOpen}
+        aria-label="search"
+        rounded="full"
+        _hover={undefined}
+        variant="ghost"
+        icon={<AiOutlineSearch size={34}/>}
+      />
+
+      <Modal
+        isOpen={isOpen}
+        onClose={onClose}
+        motionPreset="slideInBottom"
+        scrollBehavior="outside"
+        size="xl"
+      >
+        <ModalOverlay />
+        <ModalContent mt={20}>
+          <ModalBody padding={2}>
+            <InputGroup>
+              <InputLeftElement
+                children={<Icon as={AiOutlineSearch} h={6} w={7} />}
+              />
+              <Input
+                value={search}
+                onChange={(event) => setSearch(event.target.value)}
+              ></Input>
+            </InputGroup>
+            {/* <Flex alignContent="center" alignItems="center"></Flex> */}
+          </ModalBody>
+        </ModalContent>
+      </Modal>
+    </Box>
+  );
+};
+
+export const Navbar: React.FC = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { data, error, loading } = useMeQuery();
   const { authenticated, setAuthenticated } = useAuthStore();
@@ -96,16 +159,17 @@ export const Navbar = () => {
             </HStack>
           </HStack>
           <Flex alignItems={"center"}>
+            <NavSearch />
             {error ? <Text color="red">{error.message}</Text> : null}
             {loading ? <Spinner size="xl" /> : null}
-            {data ? (
-              <Text mr={2} bottom={0}>
-                {data.Viewer!.name}
-              </Text>
-            ) : null}
             <Popover trigger={"hover"} placement={"bottom-start"}>
               <PopoverTrigger>
                 <Flex>
+                  {data ? (
+                    <Text mr={2} alignSelf="center">
+                      {data.Viewer!.name}
+                    </Text>
+                  ) : null}
                   <Avatar
                     size={"sm"}
                     src={data ? data!.Viewer!.avatar!.large! : ""}
@@ -120,7 +184,7 @@ export const Navbar = () => {
                 boxShadow={"xs"}
                 p={4}
                 rounded={"xl"}
-                maxW={"36"}
+                maxW={"40"}
               >
                 <Stack>
                   <SubNav to="/w/profile" label="Profile" icon={FaUserAlt} />
@@ -131,8 +195,6 @@ export const Navbar = () => {
                   />
                   <SubNav to="/logout" label="Logout" icon={FiLogOut} />
                 </Stack>
-                <Divider/>
-                <ColorModeSwitcher/>
               </PopoverContent>
             </Popover>
           </Flex>
@@ -142,49 +204,46 @@ export const Navbar = () => {
   );
 };
 
-export const NavbarItems: React.FC = () => {
-  return (
-    <Stack direction={"row"} spacing={4}>
-      {NAV_ITEMS.map((navItem) => (
-        <Box key={navItem.label}>
-          <Popover trigger={"hover"} placement={"bottom-start"}>
-            <PopoverTrigger>
-              <Link
-                as={RLink}
-                p={2}
-                fontSize={"medium"}
-                fontWeight={600}
-                _hover={{
-                  textDecoration: "none",
-                }}
-                to={navItem.to}
-              >
-                {navItem.label}
-              </Link>
-            </PopoverTrigger>
+export const NavbarItems: React.FC = () => (
+  <Stack direction={"row"} spacing={4}>
+    {NAV_ITEMS.map((navItem) => (
+      <Box key={navItem.label}>
+        <Popover trigger={"hover"} placement={"bottom-start"}>
+          <PopoverTrigger>
+            <Link
+              as={RLink}
+              p={2}
+              fontSize={"medium"}
+              fontWeight={600}
+              _hover={{
+                textDecoration: "none",
+              }}
+              to={navItem.to}
+            >
+              {navItem.label}
+            </Link>
+          </PopoverTrigger>
 
-            {navItem.children && (
-              <PopoverContent
-                border={0}
-                boxShadow={"xl"}
-                p={4}
-                rounded={"xl"}
-                maxW={"36"}
-              >
-                <Stack>
-                  {navItem.children.map((child) => (
-                    <SubNav key={child.label} {...child} />
-                  ))}
-                </Stack>
-              </PopoverContent>
-            )}
-          </Popover>
-        </Box>
-      ))}
-    </Stack>
-  );
-};
-
+          {navItem.children && (
+            <PopoverContent
+              border={0}
+              boxShadow={"xl"}
+              p={4}
+              rounded={"xl"}
+              maxW={"36"}
+            >
+              <Stack>
+                {navItem.children.map((child) => (
+                  <SubNav key={child.label} {...child} />
+                ))}
+              </Stack>
+            </PopoverContent>
+          )}
+        </Popover>
+      </Box>
+    ))}
+  </Stack>
+);
 const SubNav = ({ label, to, subLabel, icon }: NavItem) => {
   return (
     <Link
