@@ -9,13 +9,16 @@ query Search($search: String!, $isAdult: Boolean) {
         userPreferred
       }
       coverImage {
-        medium
+        extraLarge
       }
       type
       format
       bannerImage
       startDate {
         year
+      }
+      mediaListEntry {
+        id
       }
     }
   }

@@ -2,7 +2,7 @@ overwrite: true
 schema: "https://graphql.anilist.co"
 documents: "src/react/graphql/**/*.graphql"
 generates:
-  src/generated/graphql.tsx:
+  src/react/generated/graphql.tsx:
     plugins:
       - "typescript"
       - "typescript-operations"

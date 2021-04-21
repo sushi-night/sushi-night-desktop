@@ -23,12 +23,6 @@ query MediaListCollection($userId: Int!, $type: MediaType!) {
           splitCompletedSectionByFormat
           theme
         }
-        mangaList {
-          sectionOrder
-          customLists
-          splitCompletedSectionByFormat
-          theme
-        }
       }
     }
   }
@@ -38,8 +32,6 @@ fragment mediaListEntry on MediaList {
   mediaId
   status
   score
-  progress
-  progressVolumes
   repeat
   priority
   private
@@ -74,8 +66,6 @@ fragment mediaListEntry on MediaList {
     format
     status(version: 2)
     episodes
-    volumes
-    chapters
     averageScore
     popularity
     isAdult

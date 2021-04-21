@@ -23,17 +23,21 @@ import {
   ModalBody,
   InputGroup,
   InputLeftElement,
-  Button,
+  SimpleGrid,
+  Divider,
+  Spacer,
 } from "@chakra-ui/react";
 import { useMeQuery, useSearchQuery } from "../generated/graphql";
 import { useAuthStore } from "../zustand";
-import { Link as RLink } from "react-router-dom";
+import { Link as RLink} from "react-router-dom";
 import { AiFillSetting, AiOutlineDown, AiOutlineSearch } from "react-icons/ai";
 import { FiLogOut } from "react-icons/fi";
 import { appLogo } from "../../Constants";
 import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
 import { FaUserAlt } from "react-icons/fa";
 import { IconType } from "react-icons";
+import { AnimePosterFromSearch } from "./AnimePoster";
+import { ColorModeSwitcher } from "./ColorModeSwitcher";
 
 interface NavItem {
   label: string;
@@ -70,21 +74,10 @@ const NAV_ITEMS: Array<NavItem> = [
 const NavSearch: React.FC = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [search, setSearch] = useState("");
-
   const { loading, data, error } = useSearchQuery({
     variables: { search },
     skip: search === "",
   });
-
-  if (data) {
-    console.log(data);
-  }
-  if (error) {
-    console.log(error);
-  }
-  if (loading) {
-    console.log(loading);
-  }
 
   return (
     <Box>
@@ -94,29 +87,47 @@ const NavSearch: React.FC = () => {
         rounded="full"
         _hover={undefined}
         variant="ghost"
-        icon={<AiOutlineSearch size={34}/>}
+        icon={<AiOutlineSearch size={34} />}
       />
-
       <Modal
         isOpen={isOpen}
         onClose={onClose}
         motionPreset="slideInBottom"
         scrollBehavior="outside"
-        size="xl"
+        size="4xl"
       >
         <ModalOverlay />
-        <ModalContent mt={20}>
+        <ModalContent mt={20} pb={2}>
           <ModalBody padding={2}>
             <InputGroup>
               <InputLeftElement
                 children={<Icon as={AiOutlineSearch} h={6} w={7} />}
               />
               <Input
+                placeholder="One Piece" //replace this with a random anime name?
                 value={search}
                 onChange={(event) => setSearch(event.target.value)}
-              ></Input>
+              />
             </InputGroup>
           </ModalBody>
+          {loading ? <Spinner size="md" alignSelf="center" /> : null}
+          {!loading && !error ? (
+            <Flex>
+              <SimpleGrid columns={4} padding={2} spacing={5}>
+                {data ? (
+                  data.anime?.results?.map((anime) => (
+                    <AnimePosterFromSearch
+                      key={anime!.id}
+                      anime={anime!}
+                      _onClick={onClose}
+                    />
+                  ))
+                ) : (
+                  <Text>No results</Text>
+                )}
+              </SimpleGrid>
+            </Flex>
+          ) : null}
         </ModalContent>
       </Modal>
     </Box>
@@ -194,6 +205,9 @@ export const Navbar: React.FC = () => {
                   />
                   <SubNav to="/logout" label="Logout" icon={FiLogOut} />
                 </Stack>
+                <Spacer></Spacer>
+                <Divider />
+                <ColorModeSwitcher />
               </PopoverContent>
             </Popover>
           </Flex>
