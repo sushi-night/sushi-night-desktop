@@ -172,45 +172,44 @@ export const Navbar: React.FC = () => {
             <NavSearch />
             {error ? <Text color="red">{error.message}</Text> : null}
             {loading ? <Spinner size="xl" /> : null}
-            {data ? (
-              <Popover trigger={"hover"} placement={"bottom-start"}>
-                <PopoverTrigger>
-                  <Flex>
-                    <Text cursor="pointer" mr={2} alignSelf="center">
+            <Popover trigger={"hover"} placement={"bottom-start"}>
+              <PopoverTrigger>
+                <Flex>
+                  {data ? (
+                    <Text mr={2} alignSelf="center">
                       {data.Viewer!.name}
                     </Text>
-                    <Avatar
-                      size={"sm"}
-                      src={data ? data!.Viewer!.avatar!.large! : ""}
-                    />
-                    <Box mt={2} ml={1}>
-                      <AiOutlineDown />
-                    </Box>
-                  </Flex>
-                </PopoverTrigger>
-
-                <PopoverContent
-                  border={0}
-                  boxShadow={"xs"}
-                  p={4}
-                  rounded={"xl"}
-                  maxW={"40"}
-                >
-                  <Stack>
-                    <SubNav to="/w/profile" label="Profile" icon={FaUserAlt} />
-                    <SubNav
-                      to="/w/settings"
-                      label="Settings"
-                      icon={AiFillSetting}
-                    />
-                    <SubNav to="/logout" label="Logout" icon={FiLogOut} />
-                  </Stack>
-                  <Spacer></Spacer>
-                  <Divider />
-                  <ColorModeSwitcher />
-                </PopoverContent>
-              </Popover>
-            ) : null}
+                  ) : null}
+                  <Avatar
+                    size={"sm"}
+                    src={data ? data!.Viewer!.avatar!.large! : ""}
+                  />
+                  <Box mt={2} ml={1}>
+                    <AiOutlineDown />
+                  </Box>
+                </Flex>
+              </PopoverTrigger>
+              <PopoverContent
+                border={0}
+                boxShadow={"xs"}
+                p={4}
+                rounded={"xl"}
+                maxW={"40"}
+              >
+                <Stack>
+                  <SubNav to="/w/profile" label="Profile" icon={FaUserAlt} />
+                  <SubNav
+                    to="/w/settings"
+                    label="Settings"
+                    icon={AiFillSetting}
+                  />
+                  <SubNav to="/logout" label="Logout" icon={FiLogOut} />
+                </Stack>
+                <Spacer></Spacer>
+                <Divider />
+                <ColorModeSwitcher />
+              </PopoverContent>
+            </Popover>
           </Flex>
         </Flex>
       </Box>

@@ -14,6 +14,7 @@ const App: React.FC = () => {
   ipcRenderer.on("RESPONSE_API_ENDPOINT", (_: any, arg: any) => {
     setApi(parseInt(arg));
     setServer("loaded");
+    console.log("backend up",parseInt(arg))
     ipcRenderer.removeAllListeners("RESPONSE_API_ENDPOINT");
   });
 

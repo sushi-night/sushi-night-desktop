@@ -7,11 +7,13 @@ import Icon from "@chakra-ui/icon";
 import { Button } from "@chakra-ui/button";
 import { useServerStore, useWelcomeStore } from "../../zustand";
 import { ipcRenderer } from "electron";
+import { useHistory } from "react-router";
 
 export const Welcome: React.FC = () => {
   const { setWelcome } = useWelcomeStore();
   const { server } = useServerStore();
   const [loggingIn, setLoggingIn] = useState<boolean>(false);
+  const { replace } = useHistory();
 
   if (loggingIn) {
     ipcRenderer.on("END_AUTH", async (_: any, arg: any) => {
@@ -29,12 +31,15 @@ export const Welcome: React.FC = () => {
       <Flex alignSelf="center" position="relative" marginTop={4}>
         <Image src={appLogo} height="xs" rounded="full" border="2px" />
         <Button
-          _hover={null}
+          _hover={undefined}
           alignSelf="flex-end"
           position="absolute"
           right={6}
           bottom={6}
           variant="ghost"
+          onClick={() => {
+            window.open("https://www.github.com/sushi-night", "_");
+          }}
         >
           <Image
             src="https://avatars.githubusercontent.com/u/29718978?s=460&u=3fd4f3b9037124ffd108bf32725d877ba7e9f07c&v=4"
@@ -75,6 +80,7 @@ export const Welcome: React.FC = () => {
           variant="link"
           onClick={() => {
             setWelcome(true);
+            replace("/w/home");
           }}
         >
           Continue without an account

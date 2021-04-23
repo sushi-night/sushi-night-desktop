@@ -9858,6 +9858,15 @@ supports-color@^7.1.0:
   dependencies:
     has-flag "^4.0.0"
 
+"sushi-night-backend@https://github.com/sushi-night/sushi-night-backend":
+  version "0.0.1"
+  resolved "https://github.com/sushi-night/sushi-night-backend#63ee394f52522b6232e933173ce0c2d063149b36"
+  dependencies:
+    animu-desu "^1.0.14"
+    cors "^2.8.5"
+    dotenv "^8.2.0"
+    express "^4.17.1"
+
 swap-case@^2.0.1, swap-case@^2.0.2:
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/swap-case/-/swap-case-2.0.2.tgz#671aedb3c9c137e2985ef51c51f9e98445bf70d9"

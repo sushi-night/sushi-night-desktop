@@ -1,5 +1,5 @@
 import React from "react";
-import { Route } from "react-router";
+import { Route} from "react-router";
 import { Profile } from "../navigation/pages/Profile";
 import { Home } from "../navigation/pages/Home";
 import { Settings } from "../navigation/pages/Settings";
@@ -8,6 +8,7 @@ import { Watch } from "../navigation/pages/Watch";
 import { Navbar } from "./Navbar";
 
 export const PageWithNavbar: React.FC = () => {
+
   return (
     <div>
       <Navbar />
