@@ -36,7 +36,7 @@
     "react-dom": "^17.0.2",
     "react-icons": "^4.2.0",
     "react-router-dom": "^5.2.0",
-    "sushi-night-backend": "https://github.com/sushi-night/sushi-night-backend",
+    "sushi-night-backend": "sushi-night/sushi-night-backend",
     "typescript": "^4.2.4",
     "zustand": "^3.4.1"
   },

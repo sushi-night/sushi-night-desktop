@@ -1,7 +1,7 @@
-import React from "react";
 import { Image } from "@chakra-ui/image";
 import { Badge, Box, Flex, Text } from "@chakra-ui/layout";
 import { Tooltip } from "@chakra-ui/tooltip";
+import React from "react";
 import { useHistory } from "react-router";
 import { SearchQueryAnimeResult } from "../generated/custom";
 import {

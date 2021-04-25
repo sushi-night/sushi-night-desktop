@@ -18,7 +18,6 @@ import {
   Image,
   IconButton,
   ButtonGroup,
-  Spinner,
 } from "@chakra-ui/react";
 import { Tabs } from "@chakra-ui/tabs";
 import React, { useEffect, useState } from "react";
@@ -38,7 +37,6 @@ import {
   mapSeason,
   mapStudios,
   mapAlternativeTitles,
-  getIdFromGogo,
 } from "../../util/util";
 import { useAnimeState } from "../../zustand";
 import {
@@ -50,6 +48,7 @@ import { textColor } from "../../../Constants";
 import { StatusD } from "../../components/StatusDistribution";
 import { ScoreD } from "../../components/ScoreDistribution";
 import { AnimePosterFromRecomms } from "../../components/AnimePoster";
+import { AnimeEpisodes } from "../../components/AnimeEpisodes";
 
 export const AnimeDetails: React.FC = () => {
   const { animeId } = useAnimeState();
@@ -61,36 +60,11 @@ export const AnimeDetails: React.FC = () => {
   const [showReadMore, setShowReadMore] = useState(false);
   const [readMore, setReadMore] = useState(false);
 
-  const [loadingEpisodes, setLoadingEpisodes] = useState(true);
-  const [apiError, setApiError] = useState<null | string>(null);
-  const [gogoId, setGogoId] = useState<null | string>(null);
-
   useEffect(() => {
-    window.scrollTo(0, 0);
+    window.scrollTo(1, 0); //fix weird scrollbar bug  
+    setShowReadMore(false);
+    setReadMore(false);
   }, [animeId]);
-
-  useEffect(() => {
-    if (data && data.Media) {
-      (async () => {
-        setLoadingEpisodes(true);
-        const result = await getIdFromGogo(data.Media as Media);
-        if (result.startsWith("[API]ERROR:")) {
-          console.log(result);
-          setApiError(result);
-        } else {
-          console.log(result);
-          setGogoId(result);
-          setApiError(null);
-        }
-      })();
-    }
-  }, [data]);
-
-  useEffect(() => {
-    if (gogoId) {
-      console.log("i have gogoid so i can mek request");
-    }
-  }, [gogoId]);
 
   return (
     <Box>
@@ -106,8 +80,8 @@ export const AnimeDetails: React.FC = () => {
         >
           <Box>
             <Skeleton isLoaded={!loading}>
-              <Box w={44} ml={8}>
-                <Flex flexDirection="column" w={48}>
+              <Box w={48} ml={8}>
+                <Flex flexDirection="column">
                   <Image
                     mt={14}
                     src={data?.Media?.coverImage?.extraLarge || ""}
@@ -268,24 +242,21 @@ export const AnimeDetails: React.FC = () => {
               </Box>
             </Skeleton>
             <Box position="absolute" top={80} left={64}>
-              <Box alignSelf="center" justifyContent="center">
+              <Box w="3xl">
                 <Skeleton isLoaded={!loading}>
                   <Box
                     onMouseEnter={() => setShowReadMore(true)}
                     onMouseLeave={() => setShowReadMore(false)}
                   >
-                    <Heading pt={4} as="h3" size="md" color={textColor}>
+                    <Heading as="h3" size="md" color={textColor} pt={4}>
                       {data?.Media?.title?.userPreferred}
                     </Heading>
-                    <Flex
-                      overflowY="auto"
-                      height="initial"
-                      flexDirection="column"
-                    >
+                    <Flex flexDirection="column">
                       <Text
+                        textAlign="justify"
                         color={textColor}
                         noOfLines={readMore ? 0 : 9}
-                        maxWidth="80ch"
+                        maxWidth="90ch"
                         dangerouslySetInnerHTML={{
                           __html: data?.Media?.description || "",
                         }}
@@ -340,7 +311,7 @@ export const AnimeDetails: React.FC = () => {
                             Relations
                           </Heading>
                         </Flex>
-                        <SimpleGrid maxW="2xl" columns={7}>
+                        <SimpleGrid maxW="3xl" columns={7}>
                           {data?.Media?.relations?.edges?.map((edge) =>
                             edge?.node?.type === MediaType.Anime ? (
                               <AnimeRelation key={edge?.id} anime={edge} />
@@ -358,7 +329,7 @@ export const AnimeDetails: React.FC = () => {
                             Characters
                           </Heading>
                         </Flex>
-                        <SimpleGrid maxW="2xl" columns={2} spacing={2}>
+                        <SimpleGrid columns={2} columnGap={24} spacing={2}>
                           {data?.Media?.characterPreview?.edges?.map((edge) => (
                             <AnimeCharacter key={edge?.id} character={edge} />
                           ))}
@@ -374,7 +345,7 @@ export const AnimeDetails: React.FC = () => {
                             Staff
                           </Heading>
                         </Flex>
-                        <SimpleGrid maxW="2xl" columns={2} spacing={2}>
+                        <SimpleGrid columns={2} spacing={2} columnGap={24}>
                           {data?.Media?.staffPreview?.edges?.map((edge) => (
                             <AnimeStaff key={edge?.id} staffMember={edge} />
                           ))}
@@ -419,7 +390,7 @@ export const AnimeDetails: React.FC = () => {
                             Recommendations
                           </Heading>
                         </Flex>
-                        <SimpleGrid maxW="2xl" columns={7} spacing={2} pb={6}>
+                        <SimpleGrid columns={7} spacing={2} pb={6}>
                           {data?.Media?.recommendations?.nodes?.map((node) =>
                             node ? (
                               <AnimePosterFromRecomms
@@ -431,10 +402,8 @@ export const AnimeDetails: React.FC = () => {
                         </SimpleGrid>
                       </TabPanel>
                       <TabPanel>
-                        {apiError ? (
-                          <Text color="red">{apiError}</Text>
-                        ) : gogoId ? (
-                          <Text>gogoId: {gogoId}</Text>
+                        {data?.Media ? (
+                          <AnimeEpisodes anime={data.Media as Media} />
                         ) : null}
                       </TabPanel>
                     </TabPanels>

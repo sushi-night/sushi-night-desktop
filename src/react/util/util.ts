@@ -1,4 +1,3 @@
-import { AxiosError } from "axios";
 import { useApi } from "./axios";
 import {
   FuzzyDate,
@@ -6,6 +5,7 @@ import {
   Media,
   MediaListStatus,
   MediaSeason,
+  MediaStatus,
   MediaTitle,
   Studio,
   StudioEdge,
@@ -178,29 +178,83 @@ export const getIdFromGogo = async (anime: Media) => {
     }
     otherNames = otherNames.slice(0, -1); //remove last comma.
 
-    await useApi()
-      .get<string[]>(
+    id = (
+      await useApi().get<string[]>(
         `/getId/${anime.title.romaji}/${totalEpisodes}/${otherNames}/${year}`
       )
-      .then((ids) => {
-        console.log(ids);
-        id = ids.data[0];
-      })
-      .catch((err: AxiosError) => {
-        console.log(err.request);
-        console.log(err);
-        return `[API]ERROR: ${err}`;
-      });
+    ).data[0];
   }
   return id;
+};
+
+export interface AnimeEpisode {
+  link: string;
+  quality: string;
+}
+
+export const getEpisodeLinks = async (
+  id: string,
+  episode: number
+): Promise<AnimeEpisode[]> => {
+  return (await useApi().get(`/watch/${id}/${episode}`)).data;
 };
 
 export const totalEps = (
   nextAiringEpisode: Media["nextAiringEpisode"],
   episodes: Maybe<number> | undefined
 ) =>
-  nextAiringEpisode
-    ? nextAiringEpisode.episode - 1
-    : episodes
-    ? episodes
-    : null;
+  nextAiringEpisode ? nextAiringEpisode.episode - 1 : episodes ? episodes : 0;
+
+export const maxEpisodesBeforePagination = 24;
+
+export type range = {
+  from: number;
+  to: number;
+};
+
+export const calcRanges = (anime: Media): range[] | null => {
+  const { status } = anime;
+  let { nextAiringEpisode } = anime;
+  let { episodes } = anime;
+  if (status === MediaStatus.NotYetReleased) {
+    return null;
+  }
+  const totalEpisodes = totalEps(nextAiringEpisode, episodes);
+  if (!totalEpisodes) return null;
+
+  const rangeCount = Math.ceil(totalEpisodes / maxEpisodesBeforePagination);
+
+  let ranges: range[] = [];
+
+  var base = 1;
+  var end = maxEpisodesBeforePagination;
+
+  for (var i = 0; i < rangeCount; i++) {
+    if (end >= totalEpisodes) {
+      end = totalEpisodes;
+    }
+
+    if (end >= totalEpisodes && base >= totalEpisodes) {
+      end = totalEpisodes;
+      base = totalEpisodes;
+      if (ranges[i - 1].to === end) break;
+    }
+
+    ranges.push({
+      from: base,
+      to: end,
+    });
+    base = end + 1;
+    end = end + maxEpisodesBeforePagination;
+  }
+  return ranges;
+};
+
+export const epsToRender = (from: number, to: number) => {
+  var episodesToRender: number[] = new Array(to - from + 1);
+
+  while (from <= to) {
+    episodesToRender.push(from++);
+  }
+  return episodesToRender;
+};

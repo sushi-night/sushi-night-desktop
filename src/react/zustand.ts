@@ -1,5 +1,6 @@
 import { ipcRenderer } from "electron";
 import create, { State } from "zustand";
+import { Media } from "./generated/graphql";
 
 interface WelcomeState extends State {
   welcome: boolean;
@@ -24,6 +25,18 @@ interface AnimeState extends State {
   //save the animeId instead of the object, as this can be of different types depending on where it comes from, whenever it's necessary to load its data, re-fetch it with useAnime($id) query.
   animeId?: number;
   setAnimeId: (animeId: number) => void;
+}
+
+export interface Watch {
+  anime: Media;
+  gogoId: string;
+  episode: number;
+}
+
+interface WatchState extends State {
+  //save the animeId instead of the object, as this can be of different types depending on where it comes from, whenever it's necessary to load its data, re-fetch it with useAnime($id) query.
+  watch: Watch | null;
+  setWatch: (watch: Watch) => void;
 }
 
 export const useWelcomeStore = create<WelcomeState>((set) => ({
@@ -70,6 +83,15 @@ export const useAnimeState = create<AnimeState>((set) => ({
   setAnimeId: (animeId: number) => {
     set((_) => ({
       animeId,
+    }));
+  },
+}));
+
+export const useWatchState = create<WatchState>((set) => ({
+  watch: null,
+  setWatch: (watch: Watch) => {
+    set((_) => ({
+      watch,
     }));
   },
 }));

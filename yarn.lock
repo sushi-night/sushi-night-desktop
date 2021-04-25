@@ -9858,9 +9858,9 @@ supports-color@^7.1.0:
   dependencies:
     has-flag "^4.0.0"
 
-"sushi-night-backend@https://github.com/sushi-night/sushi-night-backend":
+sushi-night-backend@sushi-night/sushi-night-backend:
   version "0.0.1"
-  resolved "https://github.com/sushi-night/sushi-night-backend#63ee394f52522b6232e933173ce0c2d063149b36"
+  resolved "https://codeload.github.com/sushi-night/sushi-night-backend/tar.gz/c1a602fc8f14f223a215860a15b69ec424ec1734"
   dependencies:
     animu-desu "^1.0.14"
     cors "^2.8.5"
