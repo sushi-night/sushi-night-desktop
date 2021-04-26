@@ -1,0 +1,34 @@
+query AnimeInProgress($userId: Int, $perPage: Int) {
+  Page(perPage: $perPage) {
+    mediaList(
+      userId: $userId
+      type: ANIME
+      status_in: [CURRENT, REPEATING]
+      sort: UPDATED_TIME_DESC
+    ) {
+      id
+      status
+      score
+      progress
+      media {
+        id
+        type
+        status(version: 2)
+        format
+        episodes
+        bannerImage
+        title {
+          userPreferred
+        }
+        coverImage {
+          extraLarge
+        }
+        nextAiringEpisode {
+          airingAt
+          timeUntilAiring
+          episode
+        }
+      }
+    }
+  }
+}

@@ -1,5 +1,5 @@
 query Search($search: String!, $isAdult: Boolean) {
-  anime: Page(perPage: 24) {
+  anime: Page(perPage: 10) {
     pageInfo {
       total
     }

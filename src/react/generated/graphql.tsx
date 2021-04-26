@@ -4489,6 +4489,187 @@ export type ToggleFavouriteMutation = (
   )> }
 );
 
+export type AdvancedSearchQueryVariables = Exact<{
+  page?: Maybe<Scalars['Int']>;
+  id?: Maybe<Scalars['Int']>;
+  type?: Maybe<MediaType>;
+  isAdult?: Maybe<Scalars['Boolean']>;
+  search?: Maybe<Scalars['String']>;
+  format?: Maybe<Array<Maybe<MediaFormat>> | Maybe<MediaFormat>>;
+  status?: Maybe<MediaStatus>;
+  countryOfOrigin?: Maybe<Scalars['CountryCode']>;
+  source?: Maybe<MediaSource>;
+  season?: Maybe<MediaSeason>;
+  seasonYear?: Maybe<Scalars['Int']>;
+  year?: Maybe<Scalars['String']>;
+  onList?: Maybe<Scalars['Boolean']>;
+  yearLesser?: Maybe<Scalars['FuzzyDateInt']>;
+  yearGreater?: Maybe<Scalars['FuzzyDateInt']>;
+  episodeLesser?: Maybe<Scalars['Int']>;
+  episodeGreater?: Maybe<Scalars['Int']>;
+  durationLesser?: Maybe<Scalars['Int']>;
+  durationGreater?: Maybe<Scalars['Int']>;
+  licensedBy?: Maybe<Array<Maybe<Scalars['String']>> | Maybe<Scalars['String']>>;
+  genres?: Maybe<Array<Maybe<Scalars['String']>> | Maybe<Scalars['String']>>;
+  excludedGenres?: Maybe<Array<Maybe<Scalars['String']>> | Maybe<Scalars['String']>>;
+  tags?: Maybe<Array<Maybe<Scalars['String']>> | Maybe<Scalars['String']>>;
+  excludedTags?: Maybe<Array<Maybe<Scalars['String']>> | Maybe<Scalars['String']>>;
+  minimumTagRank?: Maybe<Scalars['Int']>;
+  sort?: Maybe<Array<Maybe<MediaSort>> | Maybe<MediaSort>>;
+}>;
+
+
+export type AdvancedSearchQuery = (
+  { __typename?: 'Query' }
+  & { Page?: Maybe<(
+    { __typename?: 'Page' }
+    & { pageInfo?: Maybe<(
+      { __typename?: 'PageInfo' }
+      & Pick<PageInfo, 'total' | 'perPage' | 'currentPage' | 'lastPage' | 'hasNextPage'>
+    )>, media?: Maybe<Array<Maybe<(
+      { __typename?: 'Media' }
+      & Pick<Media, 'id' | 'bannerImage' | 'season' | 'type' | 'format' | 'status' | 'episodes' | 'duration' | 'genres' | 'isAdult' | 'averageScore' | 'popularity'>
+      & { title?: Maybe<(
+        { __typename?: 'MediaTitle' }
+        & Pick<MediaTitle, 'userPreferred'>
+      )>, coverImage?: Maybe<(
+        { __typename?: 'MediaCoverImage' }
+        & Pick<MediaCoverImage, 'extraLarge'>
+      )>, startDate?: Maybe<(
+        { __typename?: 'FuzzyDate' }
+        & Pick<FuzzyDate, 'year' | 'month' | 'day'>
+      )>, endDate?: Maybe<(
+        { __typename?: 'FuzzyDate' }
+        & Pick<FuzzyDate, 'year' | 'month' | 'day'>
+      )>, nextAiringEpisode?: Maybe<(
+        { __typename?: 'AiringSchedule' }
+        & Pick<AiringSchedule, 'airingAt' | 'timeUntilAiring' | 'episode'>
+      )>, mediaListEntry?: Maybe<(
+        { __typename?: 'MediaList' }
+        & Pick<MediaList, 'id' | 'status'>
+      )>, studios?: Maybe<(
+        { __typename?: 'StudioConnection' }
+        & { edges?: Maybe<Array<Maybe<(
+          { __typename?: 'StudioEdge' }
+          & Pick<StudioEdge, 'isMain'>
+          & { node?: Maybe<(
+            { __typename?: 'Studio' }
+            & Pick<Studio, 'id' | 'name'>
+          )> }
+        )>>> }
+      )> }
+    )>>> }
+  )> }
+);
+
+export type AnimeInProgressQueryVariables = Exact<{
+  userId?: Maybe<Scalars['Int']>;
+  perPage?: Maybe<Scalars['Int']>;
+}>;
+
+
+export type AnimeInProgressQuery = (
+  { __typename?: 'Query' }
+  & { Page?: Maybe<(
+    { __typename?: 'Page' }
+    & { mediaList?: Maybe<Array<Maybe<(
+      { __typename?: 'MediaList' }
+      & Pick<MediaList, 'id' | 'status' | 'score' | 'progress'>
+      & { media?: Maybe<(
+        { __typename?: 'Media' }
+        & Pick<Media, 'id' | 'type' | 'status' | 'format' | 'episodes' | 'bannerImage'>
+        & { title?: Maybe<(
+          { __typename?: 'MediaTitle' }
+          & Pick<MediaTitle, 'userPreferred'>
+        )>, coverImage?: Maybe<(
+          { __typename?: 'MediaCoverImage' }
+          & Pick<MediaCoverImage, 'extraLarge'>
+        )>, nextAiringEpisode?: Maybe<(
+          { __typename?: 'AiringSchedule' }
+          & Pick<AiringSchedule, 'airingAt' | 'timeUntilAiring' | 'episode'>
+        )> }
+      )> }
+    )>>> }
+  )> }
+);
+
+export type BrowsePageEnterQueryVariables = Exact<{
+  season?: Maybe<MediaSeason>;
+  seasonYear?: Maybe<Scalars['Int']>;
+  nextSeason?: Maybe<MediaSeason>;
+  nextYear?: Maybe<Scalars['Int']>;
+}>;
+
+
+export type BrowsePageEnterQuery = (
+  { __typename?: 'Query' }
+  & { trending?: Maybe<(
+    { __typename?: 'Page' }
+    & { media?: Maybe<Array<Maybe<(
+      { __typename?: 'Media' }
+      & MediaFragment
+    )>>> }
+  )>, season?: Maybe<(
+    { __typename?: 'Page' }
+    & { media?: Maybe<Array<Maybe<(
+      { __typename?: 'Media' }
+      & MediaFragment
+    )>>> }
+  )>, nextSeason?: Maybe<(
+    { __typename?: 'Page' }
+    & { media?: Maybe<Array<Maybe<(
+      { __typename?: 'Media' }
+      & MediaFragment
+    )>>> }
+  )>, popular?: Maybe<(
+    { __typename?: 'Page' }
+    & { media?: Maybe<Array<Maybe<(
+      { __typename?: 'Media' }
+      & MediaFragment
+    )>>> }
+  )>, top?: Maybe<(
+    { __typename?: 'Page' }
+    & { media?: Maybe<Array<Maybe<(
+      { __typename?: 'Media' }
+      & MediaFragment
+    )>>> }
+  )> }
+);
+
+export type MediaFragment = (
+  { __typename?: 'Media' }
+  & Pick<Media, 'id' | 'bannerImage' | 'season' | 'description' | 'type' | 'format' | 'status' | 'episodes' | 'duration' | 'genres' | 'isAdult' | 'averageScore' | 'popularity'>
+  & { title?: Maybe<(
+    { __typename?: 'MediaTitle' }
+    & Pick<MediaTitle, 'userPreferred'>
+  )>, coverImage?: Maybe<(
+    { __typename?: 'MediaCoverImage' }
+    & Pick<MediaCoverImage, 'extraLarge'>
+  )>, startDate?: Maybe<(
+    { __typename?: 'FuzzyDate' }
+    & Pick<FuzzyDate, 'year' | 'month' | 'day'>
+  )>, endDate?: Maybe<(
+    { __typename?: 'FuzzyDate' }
+    & Pick<FuzzyDate, 'year' | 'month' | 'day'>
+  )>, mediaListEntry?: Maybe<(
+    { __typename?: 'MediaList' }
+    & Pick<MediaList, 'id' | 'status'>
+  )>, nextAiringEpisode?: Maybe<(
+    { __typename?: 'AiringSchedule' }
+    & Pick<AiringSchedule, 'airingAt' | 'timeUntilAiring' | 'episode'>
+  )>, studios?: Maybe<(
+    { __typename?: 'StudioConnection' }
+    & { edges?: Maybe<Array<Maybe<(
+      { __typename?: 'StudioEdge' }
+      & Pick<StudioEdge, 'isMain'>
+      & { node?: Maybe<(
+        { __typename?: 'Studio' }
+        & Pick<Studio, 'id' | 'name'>
+      )> }
+    )>>> }
+  )> }
+);
+
 export type GenresAndTagsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -4970,6 +5151,57 @@ export type StatsAndFavouritesQuery = (
   )> }
 );
 
+export const MediaFragmentDoc = gql`
+    fragment media on Media {
+  id
+  title {
+    userPreferred
+  }
+  coverImage {
+    extraLarge
+  }
+  startDate {
+    year
+    month
+    day
+  }
+  endDate {
+    year
+    month
+    day
+  }
+  bannerImage
+  season
+  description
+  type
+  format
+  status(version: 2)
+  episodes
+  duration
+  genres
+  isAdult
+  averageScore
+  popularity
+  mediaListEntry {
+    id
+    status
+  }
+  nextAiringEpisode {
+    airingAt
+    timeUntilAiring
+    episode
+  }
+  studios(isMain: true) {
+    edges {
+      isMain
+      node {
+        id
+        name
+      }
+    }
+  }
+}
+    `;
 export const MediaListEntryFragmentDoc = gql`
     fragment mediaListEntry on MediaList {
   id
@@ -5177,6 +5409,283 @@ export function useToggleFavouriteMutation(baseOptions?: Apollo.MutationHookOpti
 export type ToggleFavouriteMutationHookResult = ReturnType<typeof useToggleFavouriteMutation>;
 export type ToggleFavouriteMutationResult = Apollo.MutationResult<ToggleFavouriteMutation>;
 export type ToggleFavouriteMutationOptions = Apollo.BaseMutationOptions<ToggleFavouriteMutation, ToggleFavouriteMutationVariables>;
+export const AdvancedSearchDocument = gql`
+    query AdvancedSearch($page: Int = 1, $id: Int, $type: MediaType = ANIME, $isAdult: Boolean = false, $search: String, $format: [MediaFormat], $status: MediaStatus, $countryOfOrigin: CountryCode, $source: MediaSource, $season: MediaSeason, $seasonYear: Int, $year: String, $onList: Boolean, $yearLesser: FuzzyDateInt, $yearGreater: FuzzyDateInt, $episodeLesser: Int, $episodeGreater: Int, $durationLesser: Int, $durationGreater: Int, $licensedBy: [String], $genres: [String], $excludedGenres: [String], $tags: [String], $excludedTags: [String], $minimumTagRank: Int, $sort: [MediaSort] = [POPULARITY_DESC, SCORE_DESC]) {
+  Page(page: $page, perPage: 20) {
+    pageInfo {
+      total
+      perPage
+      currentPage
+      lastPage
+      hasNextPage
+    }
+    media(
+      id: $id
+      type: $type
+      season: $season
+      format_in: $format
+      status: $status
+      countryOfOrigin: $countryOfOrigin
+      source: $source
+      search: $search
+      onList: $onList
+      seasonYear: $seasonYear
+      startDate_like: $year
+      startDate_lesser: $yearLesser
+      startDate_greater: $yearGreater
+      episodes_lesser: $episodeLesser
+      episodes_greater: $episodeGreater
+      duration_lesser: $durationLesser
+      duration_greater: $durationGreater
+      licensedBy_in: $licensedBy
+      genre_in: $genres
+      genre_not_in: $excludedGenres
+      tag_in: $tags
+      tag_not_in: $excludedTags
+      minimumTagRank: $minimumTagRank
+      sort: $sort
+      isAdult: $isAdult
+    ) {
+      id
+      title {
+        userPreferred
+      }
+      coverImage {
+        extraLarge
+      }
+      startDate {
+        year
+        month
+        day
+      }
+      endDate {
+        year
+        month
+        day
+      }
+      bannerImage
+      season
+      type
+      format
+      status(version: 2)
+      episodes
+      duration
+      genres
+      isAdult
+      averageScore
+      popularity
+      nextAiringEpisode {
+        airingAt
+        timeUntilAiring
+        episode
+      }
+      mediaListEntry {
+        id
+        status
+      }
+      studios(isMain: true) {
+        edges {
+          isMain
+          node {
+            id
+            name
+          }
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useAdvancedSearchQuery__
+ *
+ * To run a query within a React component, call `useAdvancedSearchQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAdvancedSearchQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAdvancedSearchQuery({
+ *   variables: {
+ *      page: // value for 'page'
+ *      id: // value for 'id'
+ *      type: // value for 'type'
+ *      isAdult: // value for 'isAdult'
+ *      search: // value for 'search'
+ *      format: // value for 'format'
+ *      status: // value for 'status'
+ *      countryOfOrigin: // value for 'countryOfOrigin'
+ *      source: // value for 'source'
+ *      season: // value for 'season'
+ *      seasonYear: // value for 'seasonYear'
+ *      year: // value for 'year'
+ *      onList: // value for 'onList'
+ *      yearLesser: // value for 'yearLesser'
+ *      yearGreater: // value for 'yearGreater'
+ *      episodeLesser: // value for 'episodeLesser'
+ *      episodeGreater: // value for 'episodeGreater'
+ *      durationLesser: // value for 'durationLesser'
+ *      durationGreater: // value for 'durationGreater'
+ *      licensedBy: // value for 'licensedBy'
+ *      genres: // value for 'genres'
+ *      excludedGenres: // value for 'excludedGenres'
+ *      tags: // value for 'tags'
+ *      excludedTags: // value for 'excludedTags'
+ *      minimumTagRank: // value for 'minimumTagRank'
+ *      sort: // value for 'sort'
+ *   },
+ * });
+ */
+export function useAdvancedSearchQuery(baseOptions?: Apollo.QueryHookOptions<AdvancedSearchQuery, AdvancedSearchQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<AdvancedSearchQuery, AdvancedSearchQueryVariables>(AdvancedSearchDocument, options);
+      }
+export function useAdvancedSearchLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<AdvancedSearchQuery, AdvancedSearchQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<AdvancedSearchQuery, AdvancedSearchQueryVariables>(AdvancedSearchDocument, options);
+        }
+export type AdvancedSearchQueryHookResult = ReturnType<typeof useAdvancedSearchQuery>;
+export type AdvancedSearchLazyQueryHookResult = ReturnType<typeof useAdvancedSearchLazyQuery>;
+export type AdvancedSearchQueryResult = Apollo.QueryResult<AdvancedSearchQuery, AdvancedSearchQueryVariables>;
+export const AnimeInProgressDocument = gql`
+    query AnimeInProgress($userId: Int, $perPage: Int) {
+  Page(perPage: $perPage) {
+    mediaList(
+      userId: $userId
+      type: ANIME
+      status_in: [CURRENT, REPEATING]
+      sort: UPDATED_TIME_DESC
+    ) {
+      id
+      status
+      score
+      progress
+      media {
+        id
+        type
+        status(version: 2)
+        format
+        episodes
+        bannerImage
+        title {
+          userPreferred
+        }
+        coverImage {
+          extraLarge
+        }
+        nextAiringEpisode {
+          airingAt
+          timeUntilAiring
+          episode
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useAnimeInProgressQuery__
+ *
+ * To run a query within a React component, call `useAnimeInProgressQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAnimeInProgressQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useAnimeInProgressQuery({
+ *   variables: {
+ *      userId: // value for 'userId'
+ *      perPage: // value for 'perPage'
+ *   },
+ * });
+ */
+export function useAnimeInProgressQuery(baseOptions?: Apollo.QueryHookOptions<AnimeInProgressQuery, AnimeInProgressQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<AnimeInProgressQuery, AnimeInProgressQueryVariables>(AnimeInProgressDocument, options);
+      }
+export function useAnimeInProgressLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<AnimeInProgressQuery, AnimeInProgressQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<AnimeInProgressQuery, AnimeInProgressQueryVariables>(AnimeInProgressDocument, options);
+        }
+export type AnimeInProgressQueryHookResult = ReturnType<typeof useAnimeInProgressQuery>;
+export type AnimeInProgressLazyQueryHookResult = ReturnType<typeof useAnimeInProgressLazyQuery>;
+export type AnimeInProgressQueryResult = Apollo.QueryResult<AnimeInProgressQuery, AnimeInProgressQueryVariables>;
+export const BrowsePageEnterDocument = gql`
+    query BrowsePageEnter($season: MediaSeason, $seasonYear: Int, $nextSeason: MediaSeason, $nextYear: Int) {
+  trending: Page(page: 1, perPage: 6) {
+    media(sort: TRENDING_DESC, type: ANIME, isAdult: false) {
+      ...media
+    }
+  }
+  season: Page(page: 1, perPage: 6) {
+    media(
+      season: $season
+      seasonYear: $seasonYear
+      sort: POPULARITY_DESC
+      type: ANIME
+      isAdult: false
+    ) {
+      ...media
+    }
+  }
+  nextSeason: Page(page: 1, perPage: 6) {
+    media(
+      season: $nextSeason
+      seasonYear: $nextYear
+      sort: POPULARITY_DESC
+      type: ANIME
+      isAdult: false
+    ) {
+      ...media
+    }
+  }
+  popular: Page(page: 1, perPage: 6) {
+    media(sort: POPULARITY_DESC, type: ANIME, isAdult: false) {
+      ...media
+    }
+  }
+  top: Page(page: 1, perPage: 10) {
+    media(sort: SCORE_DESC, type: ANIME, isAdult: false) {
+      ...media
+    }
+  }
+}
+    ${MediaFragmentDoc}`;
+
+/**
+ * __useBrowsePageEnterQuery__
+ *
+ * To run a query within a React component, call `useBrowsePageEnterQuery` and pass it any options that fit your needs.
+ * When your component renders, `useBrowsePageEnterQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useBrowsePageEnterQuery({
+ *   variables: {
+ *      season: // value for 'season'
+ *      seasonYear: // value for 'seasonYear'
+ *      nextSeason: // value for 'nextSeason'
+ *      nextYear: // value for 'nextYear'
+ *   },
+ * });
+ */
+export function useBrowsePageEnterQuery(baseOptions?: Apollo.QueryHookOptions<BrowsePageEnterQuery, BrowsePageEnterQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<BrowsePageEnterQuery, BrowsePageEnterQueryVariables>(BrowsePageEnterDocument, options);
+      }
+export function useBrowsePageEnterLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<BrowsePageEnterQuery, BrowsePageEnterQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<BrowsePageEnterQuery, BrowsePageEnterQueryVariables>(BrowsePageEnterDocument, options);
+        }
+export type BrowsePageEnterQueryHookResult = ReturnType<typeof useBrowsePageEnterQuery>;
+export type BrowsePageEnterLazyQueryHookResult = ReturnType<typeof useBrowsePageEnterLazyQuery>;
+export type BrowsePageEnterQueryResult = Apollo.QueryResult<BrowsePageEnterQuery, BrowsePageEnterQueryVariables>;
 export const GenresAndTagsDocument = gql`
     query GenresAndTags {
   genres: GenreCollection
@@ -5713,7 +6222,7 @@ export type PaginatedSearchLazyQueryHookResult = ReturnType<typeof usePaginatedS
 export type PaginatedSearchQueryResult = Apollo.QueryResult<PaginatedSearchQuery, PaginatedSearchQueryVariables>;
 export const SearchDocument = gql`
     query Search($search: String!, $isAdult: Boolean) {
-  anime: Page(perPage: 24) {
+  anime: Page(perPage: 10) {
     pageInfo {
       total
     }
