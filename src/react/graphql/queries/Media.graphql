@@ -137,7 +137,7 @@ query Media($id: Int) {
           status(version: 2)
           bannerImage
           coverImage {
-            large
+            extraLarge
           }
         }
         user {

@@ -1,0 +1,16 @@
+query HomeSeason(
+  $season: MediaSeason
+  $seasonYear: Int
+) {
+  season: Page(page: 1, perPage: 21) {
+    media(
+      season: $season
+      seasonYear: $seasonYear
+      sort: POPULARITY_DESC
+      type: ANIME
+      isAdult: false
+    ) {
+      ...media
+    }
+  }
+}

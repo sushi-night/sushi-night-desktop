@@ -155,6 +155,31 @@ export const mapMonths = (year: number): string => {
   }
 };
 
+let date: Date;
+
+const getDate = () => {
+  if (date) return date;
+  date = new Date();
+  return date;
+};
+
+export const getCurrentSeason = (): MediaSeason => {
+  switch (getDate().getUTCMonth()) {
+    case 2 | 3 | 4:
+      return MediaSeason.Spring;
+    case 5 | 6 | 7:
+      return MediaSeason.Summer;
+    case 8 | 9 | 10:
+      return MediaSeason.Fall;
+    case 11 | 0 | 1:
+      return MediaSeason.Winter;
+    default:
+      return MediaSeason.Spring;
+  }
+};
+
+export const getCurrentYear = (): number => getDate().getUTCFullYear();
+
 export const getIdFromGogo = async (anime: Media) => {
   let id: string = "";
   const totalEpisodes = totalEps(anime.nextAiringEpisode, anime.episodes);

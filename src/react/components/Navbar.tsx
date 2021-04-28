@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Flex,
@@ -137,13 +137,11 @@ const NavSearch: React.FC = () => {
 export const Navbar: React.FC = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { data, error, loading } = useMeQuery();
-  const { authenticated, setAuthenticated } = useAuthStore();
+  const { setAuthenticated } = useAuthStore();
 
-  if (data) {
-    if (!authenticated) {
-      setAuthenticated(true);
-    }
-  }
+  useEffect(() => {
+    setAuthenticated(data?.Viewer?.id);
+  }, [data, setAuthenticated]);
 
   return (
     <>

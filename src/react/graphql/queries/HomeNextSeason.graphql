@@ -1,0 +1,16 @@
+query HomeNextSeason(
+  $nextSeason: MediaSeason
+  $nextYear: Int
+) {
+  nextSeason: Page(page: 1, perPage: 21) {
+    media(
+      season: $nextSeason
+      seasonYear: $nextYear
+      sort: POPULARITY_DESC
+      type: ANIME
+      isAdult: false
+    ) {
+      ...media
+    }
+  }
+}

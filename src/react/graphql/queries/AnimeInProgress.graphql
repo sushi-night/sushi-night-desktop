@@ -17,8 +17,16 @@ query AnimeInProgress($userId: Int, $perPage: Int) {
         format
         episodes
         bannerImage
+        startDate {
+          year
+          month
+          day
+        }
         title {
           userPreferred
+          romaji
+          english
+          native
         }
         coverImage {
           extraLarge

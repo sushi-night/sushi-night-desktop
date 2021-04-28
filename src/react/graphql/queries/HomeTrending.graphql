@@ -1,0 +1,7 @@
+query HomeTrending {
+  trending: Page(page: 1, perPage: 21) {
+    media(sort: TRENDING_DESC, type: ANIME, isAdult: false) {
+      ...media
+    }
+  }
+}

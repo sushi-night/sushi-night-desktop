@@ -17,8 +17,8 @@ interface ServerState extends State {
 }
 
 interface AuthState extends State {
-  authenticated: boolean;
-  setAuthenticated: (state: boolean) => void;
+  authenticated?: number;
+  setAuthenticated: (id?: number) => void;
 }
 
 interface AnimeState extends State {
@@ -70,8 +70,8 @@ export const useServerStore = create<ServerState>((set) => ({
 }));
 
 export const useAuthStore = create<AuthState>((set) => ({
-  authenticated: false,
-  setAuthenticated: (authenticated: boolean) => {
+  userId: null,
+  setAuthenticated: (authenticated?: number) => {
     set((_) => ({
       authenticated,
     }));

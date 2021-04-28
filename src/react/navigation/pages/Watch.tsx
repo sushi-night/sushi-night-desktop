@@ -11,7 +11,12 @@ import {
 import { Spinner } from "@chakra-ui/spinner";
 import React, { useEffect, useState } from "react";
 import { BsFillCaretLeftFill, BsFillCaretRightFill } from "react-icons/bs";
-import { getEpisodeLinks, AnimeEpisode, totalEps } from "../../util/util";
+import {
+  getEpisodeLinks,
+  AnimeEpisode,
+  totalEps,
+  getIdFromGogo,
+} from "../../util/util";
 import { useWatchState } from "../../zustand";
 
 export const Watch: React.FC = () => {
@@ -28,7 +33,7 @@ export const Watch: React.FC = () => {
       setOptions(null);
       (async () => {
         try {
-          const opts = await getEpisodeLinks(watch.gogoId, watch.episode);
+          const opts = await getEpisodeLinks(watch.gogoId!, watch.episode);
           setOptions(opts);
           setCurrentOption(opts[0].link);
           setLoading(false);
@@ -37,8 +42,20 @@ export const Watch: React.FC = () => {
           setError(err.toString());
         }
       })();
+    } else {
+      //try to get the id
+      (async () => {
+        try {
+          if (watch?.anime) {
+            const result = await getIdFromGogo(watch.anime);
+            setWatch({ ...watch, gogoId: result });
+          }
+        } catch (err) {
+          setError(err.toString());
+        }
+      })();
     }
-  }, [watch]);
+  }, [watch, setWatch]);
 
   return (
     <Box overflow="hidden">

@@ -61,7 +61,7 @@ export const AnimeDetails: React.FC = () => {
   const [readMore, setReadMore] = useState(false);
 
   useEffect(() => {
-    window.scrollTo(1, 0); //fix weird scrollbar bug  
+    window.scrollTo(1, 0); //fix weird scrollbar bug
     setShowReadMore(false);
     setReadMore(false);
   }, [animeId]);
@@ -140,19 +140,19 @@ export const AnimeDetails: React.FC = () => {
                             </Box>
                           ) : null}
                           <Box mt={2} color={textColor}>
-                            <Heading as="h6" size="sm" fontWeight="semibold">
+                            <Heading as="h6" size="sm">
                               Format
                             </Heading>
                             <Text>{data?.Media?.format}</Text>
                           </Box>
                           <Box mt={2} color={textColor}>
-                            <Heading as="h6" size="sm" fontWeight="semibold">
+                            <Heading as="h6" size="sm">
                               Episode Duration
                             </Heading>
                             <Text>{data?.Media?.duration} mins</Text>
                           </Box>
                           <Box mt={2} color={textColor}>
-                            <Heading as="h6" size="sm" fontWeight="semibold">
+                            <Heading as="h6" size="sm">
                               Status
                             </Heading>
                             <Text>
@@ -160,13 +160,13 @@ export const AnimeDetails: React.FC = () => {
                             </Text>
                           </Box>
                           <Box mt={2} color={textColor}>
-                            <Heading as="h6" size="sm" fontWeight="semibold">
+                            <Heading as="h6" size="sm">
                               Start Date
                             </Heading>
                             <Text>{mapStartDate(data?.Media?.startDate)}</Text>
                           </Box>
                           <Box mt={2} color={textColor}>
-                            <Heading as="h6" size="sm" fontWeight="semibold">
+                            <Heading as="h6" size="sm">
                               Season
                             </Heading>
                             <Text>
@@ -177,31 +177,31 @@ export const AnimeDetails: React.FC = () => {
                             </Text>
                           </Box>
                           <Box mt={2} color={textColor}>
-                            <Heading as="h6" size="sm" fontWeight="semibold">
+                            <Heading as="h6" size="sm">
                               Average Score
                             </Heading>
                             <Text>{data?.Media?.averageScore}%</Text>
                           </Box>
                           <Box mt={2} color={textColor}>
-                            <Heading as="h6" size="sm" fontWeight="semibold">
+                            <Heading as="h6" size="sm">
                               Mean Score
                             </Heading>
                             <Text>{data?.Media?.meanScore}%</Text>
                           </Box>
                           <Box mt={2} color={textColor}>
-                            <Heading as="h6" size="sm" fontWeight="semibold">
+                            <Heading as="h6" size="sm">
                               Popularity
                             </Heading>
                             <Text>{data?.Media?.popularity}</Text>
                           </Box>
                           <Box mt={2} color={textColor}>
-                            <Heading as="h6" size="sm" fontWeight="semibold">
+                            <Heading as="h6" size="sm">
                               Favourites
                             </Heading>
                             <Text>{data?.Media?.favourites}</Text>
                           </Box>
                           <Box mt={2} color={textColor}>
-                            <Heading as="h6" size="sm" fontWeight="semibold">
+                            <Heading as="h6" size="sm">
                               Studios
                             </Heading>
                             {mapStudios(data?.Media?.studios?.edges).map(
@@ -211,7 +211,7 @@ export const AnimeDetails: React.FC = () => {
                             )}
                           </Box>
                           <Box mt={2} color={textColor}>
-                            <Heading as="h6" size="sm" fontWeight="semibold">
+                            <Heading as="h6" size="sm">
                               Producers
                             </Heading>
                             {mapStudios(data?.Media?.studios?.edges, true).map(
@@ -221,7 +221,7 @@ export const AnimeDetails: React.FC = () => {
                             )}
                           </Box>
                           <Box mt={2} color={textColor}>
-                            <Heading as="h6" size="sm" fontWeight="semibold">
+                            <Heading as="h6" size="sm">
                               Source
                             </Heading>
                             <Text>
@@ -229,7 +229,7 @@ export const AnimeDetails: React.FC = () => {
                             </Text>
                           </Box>
                           <Box mt={2} color={textColor}>
-                            <Heading as="h6" size="sm" fontWeight="semibold">
+                            <Heading as="h6" size="sm">
                               Genres
                             </Heading>
                             {<Text>{data?.Media?.genres?.join(", ")}</Text>}
