@@ -18,7 +18,7 @@ import { useAnimeState, useWatchState } from "../zustand";
 
 interface IAnimePosterFromSearch {
   anime: SearchQueryAnimeResult;
-  _onClick: () => void;
+  _onClick?: () => void;
 }
 
 interface IAnimePosterFromRecomms {
@@ -52,9 +52,8 @@ interface IAnimePosterHome {
 
 export const AnimePosterFromSearch: React.FC<IAnimePosterFromSearch> = ({
   anime,
+  _onClick,
 }) => {
-  const { setAnimeId } = useAnimeState();
-  const { push } = useHistory();
   return (
     <Box
       cursor="pointer"
@@ -62,10 +61,7 @@ export const AnimePosterFromSearch: React.FC<IAnimePosterFromSearch> = ({
       borderRadius="lg"
       borderColor="steelblue"
       backgroundColor="blackAlpha.400"
-      onClick={() => {
-        setAnimeId(anime.id);
-        push("/w/animeDetails");
-      }}
+      onClick={_onClick}
     >
       <Tooltip label={anime.title?.userPreferred}>
         <Box

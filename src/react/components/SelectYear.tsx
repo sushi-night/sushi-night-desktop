@@ -1,7 +1,7 @@
 import { Box, Heading } from "@chakra-ui/layout";
 import { Select } from "@chakra-ui/select";
 import React from "react";
-import { epsToRender, getCurrentYear } from "../util";
+import { epsToRender, getCurrentYear } from "../util/util";
 
 interface ISelectYear {
   _onSelect: (year: string) => void;

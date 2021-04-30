@@ -55,6 +55,7 @@ export const AnimeDetails: React.FC = () => {
   const { loading, error, data } = useMediaQuery({
     variables: { id: animeId },
     skip: !animeId,
+    fetchPolicy: "network-only",
   });
 
   const [showReadMore, setShowReadMore] = useState(false);

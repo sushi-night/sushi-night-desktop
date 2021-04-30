@@ -2,7 +2,7 @@ import { Box, Heading } from "@chakra-ui/layout";
 import { Select } from "@chakra-ui/select";
 import React from "react";
 import { MediaSeason } from "../generated/graphql";
-import { mapEnums } from "../util";
+import { mapEnums } from "../util/util";
 
 interface ISelectSeason {
   _onSelect: (season: string) => void;
@@ -27,7 +27,7 @@ export const SelectSeason: React.FC<ISelectSeason> = ({ _onSelect }) => {
         }}
       >
         {seasons.map((season) => (
-          <option key={season} value={season}>
+          <option key={season} value={season.toUpperCase()}>
             {mapEnums(season)}
           </option>
         ))}

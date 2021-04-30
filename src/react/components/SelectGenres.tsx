@@ -1,4 +1,4 @@
-import { Box, Button, Heading, Select, Skeleton, Text } from "@chakra-ui/react";
+import { Box, Heading, Select, Skeleton, Text } from "@chakra-ui/react";
 import React from "react";
 import { useGenresAndTagsQuery } from "../generated/graphql";
 

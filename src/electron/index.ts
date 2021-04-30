@@ -22,11 +22,12 @@ const createWindow = (): void => {
     },
     autoHideMenuBar: true,
     center: true,
+    fullscreenWindowTitle: true,
   });
 
   // and load the index.html of the app.
+  mainWindow.maximize();
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
-
   mainWindow.webContents.on("new-window", (event, url) => {
     event.preventDefault();
     shell.openExternal(url);
@@ -94,4 +95,3 @@ ipcMain.on("START_AUTH", (event, _) => {
     event.reply("END_AUTH", "close");
   });
 });
-
