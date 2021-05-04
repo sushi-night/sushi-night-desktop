@@ -179,6 +179,19 @@ query Media($id: Int) {
       id
       status
       score
+      progress
+      repeat
+      notes
+      startedAt{
+        year
+        month
+        day
+      }
+      completedAt{
+        year
+        month
+        day
+      }
     }
     stats {
       statusDistribution {

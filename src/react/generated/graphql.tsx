@@ -4928,7 +4928,14 @@ export type MediaQuery = (
       & Pick<MediaTag, 'id' | 'name' | 'description' | 'rank' | 'isMediaSpoiler' | 'isGeneralSpoiler'>
     )>>>, mediaListEntry?: Maybe<(
       { __typename?: 'MediaList' }
-      & Pick<MediaList, 'id' | 'status' | 'score'>
+      & Pick<MediaList, 'id' | 'status' | 'score' | 'progress' | 'repeat' | 'notes'>
+      & { startedAt?: Maybe<(
+        { __typename?: 'FuzzyDate' }
+        & Pick<FuzzyDate, 'year' | 'month' | 'day'>
+      )>, completedAt?: Maybe<(
+        { __typename?: 'FuzzyDate' }
+        & Pick<FuzzyDate, 'year' | 'month' | 'day'>
+      )> }
     )>, stats?: Maybe<(
       { __typename?: 'MediaStats' }
       & { statusDistribution?: Maybe<Array<Maybe<(
@@ -6249,6 +6256,19 @@ export const MediaDocument = gql`
       id
       status
       score
+      progress
+      repeat
+      notes
+      startedAt {
+        year
+        month
+        day
+      }
+      completedAt {
+        year
+        month
+        day
+      }
     }
     stats {
       statusDistribution {

@@ -18,6 +18,12 @@ import {
   Image,
   IconButton,
   ButtonGroup,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalOverlay,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { Tabs } from "@chakra-ui/tabs";
 import React, { useEffect, useState } from "react";
@@ -37,6 +43,7 @@ import {
   mapSeason,
   mapStudios,
   mapAlternativeTitles,
+  totalEps,
 } from "../../util/util";
 import { useAnimeState } from "../../zustand";
 import {
@@ -49,6 +56,7 @@ import { StatusD } from "../../components/StatusDistribution";
 import { ScoreD } from "../../components/ScoreDistribution";
 import { AnimePosterFromRecomms } from "../../components/AnimePoster";
 import { AnimeEpisodes } from "../../components/AnimeEpisodes";
+import { UpdateEntry } from "../../components/UpdateEntry";
 
 export const AnimeDetails: React.FC = () => {
   const { animeId } = useAnimeState();
@@ -66,6 +74,8 @@ export const AnimeDetails: React.FC = () => {
     setShowReadMore(false);
     setReadMore(false);
   }, [animeId]);
+
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
     <Box>
@@ -90,13 +100,40 @@ export const AnimeDetails: React.FC = () => {
                   <Flex mt={4}>
                     <Box>
                       <ButtonGroup isAttached size="md">
-                        <Button colorScheme="blue" mr={-2.5} pl={2}>
+                        <Button
+                          colorScheme="blue"
+                          mr={-2.5}
+                          pl={2}
+                          onClick={onOpen}
+                        >
                           {data?.Media?.mediaListEntry?.status
                             ? MapMediaListStatus(
                                 data?.Media?.mediaListEntry?.status
                               )
                             : "Add to List"}
                         </Button>
+                        <Modal
+                          isOpen={isOpen}
+                          onClose={onClose}
+                          motionPreset="slideInBottom"
+                          scrollBehavior="outside"
+                          size="4xl"
+                        >
+                          <ModalOverlay />
+                          <ModalContent mt={20} pb={2} w="50%">
+                            <ModalCloseButton />
+                            <ModalBody py={10} pb={2}>
+                              <UpdateEntry
+                                entry={data?.Media?.mediaListEntry}
+                                maxEpisodes={totalEps(
+                                  data?.Media
+                                    ?.nextAiringEpisode as Media["nextAiringEpisode"],
+                                  data?.Media?.episodes
+                                )}
+                              />
+                            </ModalBody>
+                          </ModalContent>
+                        </Modal>
                         <IconButton
                           aria-label="edit"
                           colorScheme="linkedin"

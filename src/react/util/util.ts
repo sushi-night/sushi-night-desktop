@@ -7,6 +7,7 @@ import {
   MediaSeason,
   MediaStatus,
   MediaTitle,
+  ScoreFormat,
   Studio,
   StudioEdge,
 } from "../generated/graphql";
@@ -282,4 +283,46 @@ export const epsToRender = (from: number, to: number) => {
     episodesToRender.push(from++);
   }
   return episodesToRender;
+};
+
+type option = { value: any; label: any };
+
+export const options = (start: number, end: number, step: number): option[] => {
+  let _scores: option[] = new Array(end - start + 1);
+  while (start <= end) {
+    _scores.push({ value: start, label: start });
+    start += step;
+  }
+  return _scores;
+};
+
+var _userScores: option[] = [];
+
+export const getUserScores = () => _userScores;
+
+export const setUserScores = (
+  scoringMethod: Maybe<ScoreFormat> | undefined
+) => {
+  switch (scoringMethod) {
+    case ScoreFormat.Point_10: {
+      _userScores = options(0, 10, 1);
+      break;
+    }
+    case ScoreFormat.Point_100: {
+      _userScores = options(0, 100, 1);
+      break;
+    }
+    case ScoreFormat.Point_10Decimal: {
+      _userScores = options(0, 10, 0.5);
+      break;
+    }
+    case ScoreFormat.Point_5: {
+      _userScores = options(0, 5, 1);
+      break;
+    }
+    case ScoreFormat.Point_3: {
+      _userScores = options(0, 3, 1);
+      break;
+    }
+  }
 };

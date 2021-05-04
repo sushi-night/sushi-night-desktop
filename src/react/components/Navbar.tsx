@@ -38,6 +38,7 @@ import { FaUserAlt } from "react-icons/fa";
 import { IconType } from "react-icons";
 import { AnimePosterFromSearch } from "./AnimePoster";
 import { ColorModeSwitcher } from "./ColorModeSwitcher";
+import { setUserScores } from "../util/util";
 
 interface NavItem {
   label: string;
@@ -141,6 +142,7 @@ export const Navbar: React.FC = () => {
 
   useEffect(() => {
     setAuthenticated(data?.Viewer?.id);
+    setUserScores(data?.Viewer?.mediaListOptions?.scoreFormat);
   }, [data, setAuthenticated]);
 
   return (
