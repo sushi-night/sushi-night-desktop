@@ -50,7 +50,7 @@ const CustomHeader = ({
       <IconButton
         borderRadius="full"
         size="sm"
-        variant="ghost"
+        variant="solid"
         aria-label="Previous Month"
         icon={<ChevronLeftIcon fontSize="14px" />}
         onClick={decreaseMonth}
@@ -59,7 +59,7 @@ const CustomHeader = ({
       <IconButton
         borderRadius="full"
         size="sm"
-        variant="ghost"
+        variant="solid"
         aria-label="Next Month"
         icon={<ChevronRightIcon fontSize="14px" />}
         onClick={increaseMonth}
@@ -132,12 +132,22 @@ export const DatePicker: FC<DatePickerProps> = ({ value, onChange }) => {
           showPopperArrow={false}
           popperClassName={css({ marginTop: "4px!important" })}
           calendarClassName={css(styles)}
-          selected={value || undefined}
+          selected={value}
           onChange={(date) =>
             Array.isArray(date) ? onChange(date[0]) : onChange(date)
           }
           customInput={<CustomInput />}
           renderCustomHeader={CustomHeader}
+          popperPlacement="bottom-start"
+          popperModifiers={{
+            flip: {
+              enabled: false,
+            },
+            preventOverflow: {
+              enabled: true,
+              escapeWithReference: false,
+            },
+          }}
         />
       );
     },

@@ -112,12 +112,15 @@ export const UpdateEntry: React.FC<IUpdateEntryProps> = ({
           <TotalRewatches totalRewatches={entry?.repeat} />
         </Flex>
         <Box w="lg">
+          <Heading as="h4" size="sm" pb={2}>
+            Notes
+          </Heading>
           <Textarea
             value={notes || undefined}
             onChange={(e) => setNotes(e.target.value)}
           />
         </Box>
-        <HStack pt={4} align="flex-end" justify="flex-end">
+        <HStack pt={4} align="flex-end" justify="flex-end" w="lg">
           <Button colorScheme="red">Delete</Button>
           <Button colorScheme="blue">Save</Button>
         </HStack>
@@ -263,15 +266,18 @@ export const SelectDate: React.FC<ISelectDate> = ({
   _title,
 }) => {
   const [startDate, setStartDate] = useState(
-    _default && new Date(_default.year!, _default.month!, _default.day!)
+    _default?.day
+      ? new Date(_default.year!, _default.month!, _default.day!)
+      : undefined
   );
+
   return (
     <Box w={40}>
       <Heading as="h4" size="sm" pb={2}>
         {_title}
       </Heading>
       <DatePicker
-        value={startDate || undefined}
+        value={startDate}
         onChange={(date: Date | null) => {
           setStartDate(date as Date);
           date &&
