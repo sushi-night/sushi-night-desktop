@@ -4,11 +4,11 @@ mutation SaveMediaListEntry(
   $status: MediaListStatus
   $score: Float
   $progress: Int
-  $progressVolumes: Int
   $repeat: Int
   $advancedScores: [Float]
   $startedAt: FuzzyDateInput
   $completedAt: FuzzyDateInput
+  $notes: String
 ) {
   SaveMediaListEntry(
     id: $id
@@ -16,11 +16,11 @@ mutation SaveMediaListEntry(
     status: $status
     score: $score
     progress: $progress
-    progressVolumes: $progressVolumes
     repeat: $repeat
     advancedScores: $advancedScores
     startedAt: $startedAt
     completedAt: $completedAt
+    notes: $notes
   ) {
     id
   }

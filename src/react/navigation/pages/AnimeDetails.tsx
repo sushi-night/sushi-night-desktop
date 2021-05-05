@@ -16,8 +16,6 @@ import {
   Skeleton,
   Button,
   Image,
-  IconButton,
-  ButtonGroup,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -28,7 +26,6 @@ import {
 import { Tabs } from "@chakra-ui/tabs";
 import React, { useEffect, useState } from "react";
 import { FaHeart } from "react-icons/fa";
-import { BsChevronDown } from "react-icons/bs";
 import {
   Media,
   MediaStatus,
@@ -57,10 +54,11 @@ import { ScoreD } from "../../components/ScoreDistribution";
 import { AnimePosterFromRecomms } from "../../components/AnimePoster";
 import { AnimeEpisodes } from "../../components/AnimeEpisodes";
 import { UpdateEntry } from "../../components/UpdateEntry";
+import { FiEdit } from "react-icons/fi";
 
 export const AnimeDetails: React.FC = () => {
   const { animeId } = useAnimeState();
-  const { loading, error, data } = useMediaQuery({
+  const { loading, error, data, refetch } = useMediaQuery({
     variables: { id: animeId },
     skip: !animeId,
     fetchPolicy: "network-only",
@@ -70,7 +68,7 @@ export const AnimeDetails: React.FC = () => {
   const [readMore, setReadMore] = useState(false);
 
   useEffect(() => {
-    window.scrollTo(1, 0); //fix weird scrollbar bug
+    // window.scrollTo(1, 0); //fix weird scrollbar bug
     setShowReadMore(false);
     setReadMore(false);
   }, [animeId]);
@@ -99,48 +97,46 @@ export const AnimeDetails: React.FC = () => {
                   />
                   <Flex mt={4}>
                     <Box>
-                      <ButtonGroup isAttached size="md">
-                        <Button
-                          colorScheme="blue"
-                          mr={-2.5}
-                          pl={2}
-                          onClick={onOpen}
-                        >
-                          {data?.Media?.mediaListEntry?.status
-                            ? MapMediaListStatus(
-                                data?.Media?.mediaListEntry?.status
-                              )
-                            : "Add to List"}
-                        </Button>
-                        <Modal
-                          isOpen={isOpen}
-                          onClose={onClose}
-                          motionPreset="slideInBottom"
-                          scrollBehavior="outside"
-                          size="4xl"
-                        >
-                          <ModalOverlay />
-                          <ModalContent mt={20} pb={2} w="50%">
-                            <ModalCloseButton />
-                            <ModalBody py={10} pb={2}>
-                              <UpdateEntry
-                                entry={data?.Media?.mediaListEntry}
-                                maxEpisodes={totalEps(
-                                  data?.Media
-                                    ?.nextAiringEpisode as Media["nextAiringEpisode"],
-                                  data?.Media?.episodes
-                                )}
-                              />
-                            </ModalBody>
-                          </ModalContent>
-                        </Modal>
-                        <IconButton
-                          aria-label="edit"
-                          colorScheme="linkedin"
-                          icon={<BsChevronDown />}
-                          width="0.5"
-                        />
-                      </ButtonGroup>
+                      <Button
+                        colorScheme="blue"
+                        mr={-2.5}
+                        pl={2}
+                        onClick={onOpen}
+                        rightIcon={<FiEdit />}
+                      >
+                        {data?.Media?.mediaListEntry?.status
+                          ? MapMediaListStatus(
+                              data?.Media?.mediaListEntry?.status
+                            )
+                          : "Add to List"}
+                      </Button>
+                      <Modal
+                        isOpen={isOpen}
+                        onClose={onClose}
+                        motionPreset="slideInBottom"
+                        scrollBehavior="outside"
+                        size="4xl"
+                        blockScrollOnMount={false}
+                      >
+                        <ModalOverlay />
+                        <ModalContent mt={20} pb={2} w="50%">
+                          <ModalCloseButton />
+                          <ModalBody py={10} pb={2}>
+                            <UpdateEntry
+                              entry={data?.Media?.mediaListEntry}
+                              maxEpisodes={totalEps(
+                                data?.Media
+                                  ?.nextAiringEpisode as Media["nextAiringEpisode"],
+                                data?.Media?.episodes
+                              )}
+                              _onDelete={() => {
+                                onClose();
+                                refetch();
+                              }}
+                            />
+                          </ModalBody>
+                        </ModalContent>
+                      </Modal>
                     </Box>
                     <Spacer />
                     <Box>
@@ -183,12 +179,14 @@ export const AnimeDetails: React.FC = () => {
                             </Heading>
                             <Text>{data?.Media?.format}</Text>
                           </Box>
-                          <Box mt={2} color={textColor}>
-                            <Heading as="h6" size="sm">
-                              Episode Duration
-                            </Heading>
-                            <Text>{data?.Media?.duration} mins</Text>
-                          </Box>
+                          {data?.Media?.duration ? (
+                            <Box mt={2} color={textColor}>
+                              <Heading as="h6" size="sm">
+                                Episode Duration
+                              </Heading>
+                              <Text>{data?.Media?.duration} mins</Text>
+                            </Box>
+                          ) : null}
                           <Box mt={2} color={textColor}>
                             <Heading as="h6" size="sm">
                               Status
@@ -197,23 +195,29 @@ export const AnimeDetails: React.FC = () => {
                               {mapEnums(data?.Media?.status?.toString())}
                             </Text>
                           </Box>
-                          <Box mt={2} color={textColor}>
-                            <Heading as="h6" size="sm">
-                              Start Date
-                            </Heading>
-                            <Text>{mapStartDate(data?.Media?.startDate)}</Text>
-                          </Box>
-                          <Box mt={2} color={textColor}>
-                            <Heading as="h6" size="sm">
-                              Season
-                            </Heading>
-                            <Text>
-                              {mapSeason(
-                                data?.Media?.season,
-                                data?.Media?.seasonYear
-                              )}
-                            </Text>
-                          </Box>
+                          {data?.Media?.startDate ? (
+                            <Box mt={2} color={textColor}>
+                              <Heading as="h6" size="sm">
+                                Start Date
+                              </Heading>
+                              <Text>
+                                {mapStartDate(data?.Media?.startDate)}
+                              </Text>
+                            </Box>
+                          ) : null}
+                          {data?.Media?.season ? (
+                            <Box mt={2} color={textColor}>
+                              <Heading as="h6" size="sm">
+                                Season
+                              </Heading>
+                              <Text>
+                                {mapSeason(
+                                  data?.Media?.season,
+                                  data?.Media?.seasonYear
+                                )}
+                              </Text>
+                            </Box>
+                          ) : null}
                           <Box mt={2} color={textColor}>
                             <Heading as="h6" size="sm">
                               Average Score

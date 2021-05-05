@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "allowJs": true,
     "module": "ES6",
     "skipLibCheck": true,
@@ -13,7 +14,7 @@
     "paths": {
       "*": ["node_modules/*"]
     },
-    "jsx": "react",
+    "jsx": "react"
   },
   "include": ["src/**/*"]
 }

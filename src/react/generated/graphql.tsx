@@ -4460,11 +4460,11 @@ export type SaveMediaListEntryMutationVariables = Exact<{
   status?: Maybe<MediaListStatus>;
   score?: Maybe<Scalars['Float']>;
   progress?: Maybe<Scalars['Int']>;
-  progressVolumes?: Maybe<Scalars['Int']>;
   repeat?: Maybe<Scalars['Int']>;
   advancedScores?: Maybe<Array<Maybe<Scalars['Float']>> | Maybe<Scalars['Float']>>;
   startedAt?: Maybe<FuzzyDateInput>;
   completedAt?: Maybe<FuzzyDateInput>;
+  notes?: Maybe<Scalars['String']>;
 }>;
 
 
@@ -5375,18 +5375,18 @@ export type DeleteMediaListEntryMutationHookResult = ReturnType<typeof useDelete
 export type DeleteMediaListEntryMutationResult = Apollo.MutationResult<DeleteMediaListEntryMutation>;
 export type DeleteMediaListEntryMutationOptions = Apollo.BaseMutationOptions<DeleteMediaListEntryMutation, DeleteMediaListEntryMutationVariables>;
 export const SaveMediaListEntryDocument = gql`
-    mutation SaveMediaListEntry($id: Int, $mediaId: Int, $status: MediaListStatus, $score: Float, $progress: Int, $progressVolumes: Int, $repeat: Int, $advancedScores: [Float], $startedAt: FuzzyDateInput, $completedAt: FuzzyDateInput) {
+    mutation SaveMediaListEntry($id: Int, $mediaId: Int, $status: MediaListStatus, $score: Float, $progress: Int, $repeat: Int, $advancedScores: [Float], $startedAt: FuzzyDateInput, $completedAt: FuzzyDateInput, $notes: String) {
   SaveMediaListEntry(
     id: $id
     mediaId: $mediaId
     status: $status
     score: $score
     progress: $progress
-    progressVolumes: $progressVolumes
     repeat: $repeat
     advancedScores: $advancedScores
     startedAt: $startedAt
     completedAt: $completedAt
+    notes: $notes
   ) {
     id
   }
@@ -5412,11 +5412,11 @@ export type SaveMediaListEntryMutationFn = Apollo.MutationFunction<SaveMediaList
  *      status: // value for 'status'
  *      score: // value for 'score'
  *      progress: // value for 'progress'
- *      progressVolumes: // value for 'progressVolumes'
  *      repeat: // value for 'repeat'
  *      advancedScores: // value for 'advancedScores'
  *      startedAt: // value for 'startedAt'
  *      completedAt: // value for 'completedAt'
+ *      notes: // value for 'notes'
  *   },
  * });
  */

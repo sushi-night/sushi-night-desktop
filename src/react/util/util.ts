@@ -36,7 +36,7 @@ export const secondsToDhm = (seconds: number): string => {
 
 export const mapEnums = (status?: string) =>
   status
-    ? status.charAt(0) + status.substring(1).toLowerCase().replace("_", " ")
+    ? status.charAt(0) + status.substring(1).toLowerCase().replaceAll("_", " ")
     : "";
 
 export const mapStartDate = (

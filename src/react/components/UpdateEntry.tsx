@@ -6,6 +6,7 @@ import {
   HStack,
   SimpleGrid,
   Spacer,
+  Text,
 } from "@chakra-ui/layout";
 import {
   NumberInput,
@@ -22,8 +23,11 @@ import {
   Maybe,
   MediaList,
   MediaListStatus,
+  useDeleteMediaListEntryMutation,
+  useSaveMediaListEntryMutation,
 } from "../generated/graphql";
 import { getUserScores, MapMediaListStatus, options } from "../util/util";
+import { useAnimeState } from "../zustand";
 import { DatePicker } from "./DatePicker";
 
 interface IUpdateEntryProps {
@@ -47,22 +51,30 @@ interface IUpdateEntryProps {
       }
   >;
   maxEpisodes: number;
+  _onDelete: () => void;
 }
 
 export const UpdateEntry: React.FC<IUpdateEntryProps> = ({
   entry,
   maxEpisodes,
+  _onDelete,
 }) => {
+  const { animeId } = useAnimeState();
+  const saveEntry = useSaveMediaListEntryMutation();
+  const deleteEntry = useDeleteMediaListEntryMutation();
   const [status, setStatus] = useState(entry?.status);
   const [score, setScore] = useState(entry?.score);
   const [progress, setProgress] = useState(entry?.progress);
   const [startedAt, setStartedAt] = useState(entry?.startedAt);
   const [completedAt, setCompletedAt] = useState(entry?.completedAt);
   const [notes, setNotes] = useState(entry?.notes);
+  const [repeat, setRepeat] = useState(entry?.repeat);
+  const [err, setError] = useState<string | null>(null);
 
   return (
     <Box>
       <SimpleGrid rows={4} spacingY={4}>
+        <Flex>{err ? <Text color="red">{err.toString()}</Text> : null}</Flex>
         <Flex>
           <SelectStatus
             _onSelectStatus={(_status: MediaListStatus | null | undefined) =>
@@ -109,7 +121,10 @@ export const UpdateEntry: React.FC<IUpdateEntryProps> = ({
             _title="Completed At"
           />
           <Spacer />
-          <TotalRewatches totalRewatches={entry?.repeat} />
+          <Repeats
+            totalRepeats={entry?.repeat}
+            _onSelectRepeat={(value: number) => setRepeat(value)}
+          />
         </Flex>
         <Box w="lg">
           <Heading as="h4" size="sm" pb={2}>
@@ -121,8 +136,51 @@ export const UpdateEntry: React.FC<IUpdateEntryProps> = ({
           />
         </Box>
         <HStack pt={4} align="flex-end" justify="flex-end" w="lg">
-          <Button colorScheme="red">Delete</Button>
-          <Button colorScheme="blue">Save</Button>
+          <Button
+            colorScheme="red"
+            isLoading={saveEntry[1].loading || deleteEntry[1].loading}
+            onClick={async () => {
+              try {
+                await deleteEntry[0]({ variables: { id: entry?.id } });
+                setError(null);
+                _onDelete();
+              } catch (err) {
+                setError(err);
+              }
+            }}
+            isDisabled={!!!entry?.id}
+          >
+            Delete
+          </Button>
+          <Button
+            isLoading={saveEntry[1].loading || deleteEntry[1].loading}
+            colorScheme="blue"
+            onClick={async () => {
+              try {
+                const result = await saveEntry[0]({
+                  variables: {
+                    id: entry?.id ? entry?.id : undefined,
+                    mediaId: animeId,
+                    status: status ? status : undefined,
+                    completedAt: completedAt?.day ? completedAt : undefined,
+                    startedAt: startedAt?.day ? startedAt : undefined,
+                    progress: progress ? progress : undefined,
+                    score: score ? score : undefined,
+                    repeat: repeat ? repeat : undefined,
+                    notes: notes ? notes : undefined,
+                  },
+                });
+                if (entry && result.data?.SaveMediaListEntry?.id) {
+                  entry.id = result.data?.SaveMediaListEntry?.id;
+                }
+                setError(null);
+              } catch (err) {
+                setError(err);
+              }
+            }}
+          >
+            Save
+          </Button>
         </HStack>
       </SimpleGrid>
     </Box>
@@ -292,19 +350,26 @@ export const SelectDate: React.FC<ISelectDate> = ({
   );
 };
 
-interface ITotalRewatchesProps {
-  totalRewatches: Maybe<number> | undefined;
+interface IRepeatsProps {
+  totalRepeats: Maybe<number> | undefined;
+  _onSelectRepeat: (value: number) => void;
 }
 
-export const TotalRewatches: React.FC<ITotalRewatchesProps> = ({
-  totalRewatches,
+export const Repeats: React.FC<IRepeatsProps> = ({
+  totalRepeats,
+  _onSelectRepeat,
 }) => {
   return (
     <Box w={40}>
       <Heading as="h4" size="sm" pb={2}>
         Total Rewatches
       </Heading>
-      <NumberInput defaultValue={totalRewatches || 0} min={0} max={99}>
+      <NumberInput
+        defaultValue={totalRepeats || 0}
+        min={0}
+        max={99}
+        onChange={(value) => _onSelectRepeat(parseInt(value))}
+      >
         <NumberInputField />
         <NumberInputStepper>
           <NumberIncrementStepper />

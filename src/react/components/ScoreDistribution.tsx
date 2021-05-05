@@ -21,7 +21,7 @@ export const ScoreD: React.FC<ScoreDistributionProps> = ({
     <HStack>
       {scoresPercentages(scoreDistribution).map(
         ({ score, percentage, ammount }) => (
-          <Flex key={score} h="36" flexDirection="column" justify="end">
+          <Flex key={score} h="36" flexDirection="column" justify="flex-end">
             <Text>{ammount}</Text>
             <Box
               alignSelf="center"
