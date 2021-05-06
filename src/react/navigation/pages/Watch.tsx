@@ -140,7 +140,7 @@ export const Watch: React.FC = () => {
                 height="36"
                 width="24"
                 aria-label="previous-episode"
-                icon={<BsFillCaretLeftFill size="lg" />}
+                icon={<BsFillCaretLeftFill size={96} />}
                 isDisabled={loading || watch!.episode > 1 ? false : true}
                 onClick={() => {
                   if (watch) {
@@ -175,7 +175,7 @@ export const Watch: React.FC = () => {
                 height="36"
                 width="24"
                 aria-label="next-episode"
-                icon={<BsFillCaretRightFill size="lg" />}
+                icon={<BsFillCaretRightFill size={96} />}
                 isDisabled={
                   loading ||
                   watch!.episode <
