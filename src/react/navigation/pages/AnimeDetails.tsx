@@ -55,6 +55,7 @@ import { AnimePosterFromRecomms } from "../../components/AnimePoster";
 import { AnimeEpisodes } from "../../components/AnimeEpisodes";
 import { UpdateEntry } from "../../components/UpdateEntry";
 import { FiEdit } from "react-icons/fi";
+import { Favourite } from "../../components/Favourite";
 
 export const AnimeDetails: React.FC = () => {
   const { animeId } = useAnimeState();
@@ -140,14 +141,7 @@ export const AnimeDetails: React.FC = () => {
                     </Box>
                     <Spacer />
                     <Box>
-                      <Button
-                        colorScheme="red"
-                        color={data?.Media?.isFavourite ? "red" : "ButtonText"}
-                        pl={2}
-                        pr={2}
-                      >
-                        <FaHeart />
-                      </Button>
+                      <Favourite isFavourite={data?.Media?.isFavourite} />
                     </Box>
                   </Flex>
                   <Box>
