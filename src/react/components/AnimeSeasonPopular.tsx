@@ -6,11 +6,18 @@ import { getCurrentSeason, getCurrentYear } from "../util/util";
 import { AnimePosterHome } from "./AnimePoster";
 import { HorizontalScroll } from "./HorizontalScroll";
 
-export const AnimeSeasonPopular: React.FC = () => {
+interface AnimeSeasonPopularProps {
+  perPage: number;
+}
+
+export const AnimeSeasonPopular: React.FC<AnimeSeasonPopularProps> = ({
+  perPage,
+}) => {
   const { loading, error, data } = useHomeSeasonQuery({
     variables: {
       season: getCurrentSeason(),
       seasonYear: getCurrentYear(),
+      perPage,
     },
   });
 

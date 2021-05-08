@@ -7,13 +7,13 @@ import Icon from "@chakra-ui/icon";
 import { Button } from "@chakra-ui/button";
 import { useServerStore, useWelcomeStore } from "../../zustand";
 import { ipcRenderer } from "electron";
-import { useHistory } from "react-router";
+// import { useHistory } from "react-router";
 
 export const Welcome: React.FC = () => {
   const { setWelcome } = useWelcomeStore();
   const { server } = useServerStore();
   const [loggingIn, setLoggingIn] = useState<boolean>(false);
-  const { replace } = useHistory();
+  // const { replace } = useHistory();
 
   if (loggingIn) {
     ipcRenderer.on("END_AUTH", async (_: any, arg: any) => {
@@ -73,7 +73,7 @@ export const Welcome: React.FC = () => {
         >
           Login with Anilist
         </Button>
-        <Button
+        {/* <Button
           isLoading={server == "loading" || loggingIn}
           colorScheme="teal"
           marginTop={2}
@@ -84,7 +84,7 @@ export const Welcome: React.FC = () => {
           }}
         >
           Continue without an account
-        </Button>
+        </Button> */}
       </Flex>
     </Flex>
   );

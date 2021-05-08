@@ -28,8 +28,8 @@ import {
   Spacer,
 } from "@chakra-ui/react";
 import { useMeQuery, useSearchQuery } from "../generated/graphql";
-import { useAuthStore } from "../zustand";
-import { Link as RLink } from "react-router-dom";
+import { useAnimeState, useAuthStore } from "../zustand";
+import { Link as RLink, useHistory } from "react-router-dom";
 import { AiFillSetting, AiOutlineDown, AiOutlineSearch } from "react-icons/ai";
 import { FiLogOut } from "react-icons/fi";
 import { appLogo } from "../../Constants";
@@ -58,15 +58,15 @@ const NAV_ITEMS: Array<NavItem> = [
     children: [
       {
         label: "Top 100",
-        to: "/w/browse/:top100",
+        to: "/w/browse/top100",
       },
       {
         label: "Trending",
-        to: "/w/browse/:trending",
+        to: "/w/browse/trending",
       },
       {
         label: "Top Movies",
-        to: "/w/browse/:movies",
+        to: "/w/browse/topMovies",
       },
     ],
   },
@@ -78,8 +78,11 @@ const NavSearch: React.FC = () => {
   const { loading, data, error } = useSearchQuery({
     variables: { search },
     skip: search === "",
+    fetchPolicy: "network-only",
   });
 
+  const { push } = useHistory();
+  const { setAnimeId } = useAnimeState();
   return (
     <Box>
       <IconButton
@@ -120,7 +123,11 @@ const NavSearch: React.FC = () => {
                     <AnimePosterFromSearch
                       key={anime!.id}
                       anime={anime!}
-                      _onClick={onClose}
+                      _onClick={() => {
+                        setAnimeId(anime!.id);
+                        push("/w/animeDetails");
+                        onClose();
+                      }}
                     />
                   ))
                 ) : (
@@ -139,7 +146,7 @@ export const Navbar: React.FC = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { data, error, loading } = useMeQuery();
   const { setAuthenticated } = useAuthStore();
-
+  const { push } = useHistory();
   useEffect(() => {
     setAuthenticated(data?.Viewer?.id);
     setUserScores(data?.Viewer?.mediaListOptions?.scoreFormat);
@@ -163,7 +170,13 @@ export const Navbar: React.FC = () => {
               display={{ base: "none", md: "flex" }}
             >
               <Flex alignSelf="center">
-                <Image src={appLogo} boxSize={12} rounded="full" />
+                <Image
+                  src={appLogo}
+                  boxSize={12}
+                  rounded="full"
+                  cursor="pointer"
+                  onClick={() => push("/w/home")}
+                />
               </Flex>
               <NavbarItems />
             </HStack>

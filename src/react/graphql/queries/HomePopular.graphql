@@ -1,7 +1,0 @@
-query HomePopular {
-  popular: Page(page: 1, perPage: 21) {
-    media(sort: POPULARITY_DESC, type: ANIME, isAdult: false) {
-      ...media
-    }
-  }
-}

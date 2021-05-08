@@ -7,6 +7,7 @@ import { AnimeDetails } from "../navigation/pages/AnimeDetails";
 import { Watch } from "../navigation/pages/Watch";
 import { Navbar } from "./Navbar";
 import { Browse } from "../navigation/pages/Browse";
+import { AnimeList } from "../navigation/pages/AnimeList";
 
 export const PageWithNavbar: React.FC = () => {
   return (
@@ -19,6 +20,7 @@ export const PageWithNavbar: React.FC = () => {
       <Route exact path="/w/settings" component={Settings} />
       <Route exact path="/w/animeDetails" component={AnimeDetails} />
       <Route exact path="/w/watch" component={Watch} />
+      <Route exact path="/w/animelist" component={AnimeList} />
     </div>
   );
 };

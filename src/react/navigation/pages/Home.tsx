@@ -2,7 +2,7 @@ import { Box, Heading } from "@chakra-ui/layout";
 import { Skeleton } from "@chakra-ui/skeleton";
 import React from "react";
 import { AnimeInProgress } from "../../components/AnimeInProgress";
-import { AnimePopular } from "../../components/AnimePopular";
+import { AnimeTop } from "../../components/AnimeTop";
 import { AnimeSeasonPopular } from "../../components/AnimeSeasonPopular";
 import { AnimeTrending } from "../../components/AnimeTrending";
 import { useAuthStore } from "../../zustand";
@@ -37,7 +37,7 @@ export const Home: React.FC = () => {
       >
         Trending
       </Heading>
-      <AnimeTrending />
+      <AnimeTrending perPage={21} />
       <Heading
         pt={4}
         alignSelf="center"
@@ -48,7 +48,7 @@ export const Home: React.FC = () => {
       >
         Popular this season
       </Heading>
-      <AnimeSeasonPopular />
+      <AnimeSeasonPopular perPage={21} />
       <Heading
         pt={4}
         alignSelf="center"
@@ -59,7 +59,7 @@ export const Home: React.FC = () => {
       >
         All time popular
       </Heading>
-      <AnimePopular />
+      <AnimeTop perPage={21} />
     </Box>
   );
 };

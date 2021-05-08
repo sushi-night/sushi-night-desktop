@@ -4525,6 +4525,7 @@ export type ToggleFavouriteMutation = (
 
 export type AdvancedSearchQueryVariables = Exact<{
   page?: Maybe<Scalars['Int']>;
+  perPage?: Maybe<Scalars['Int']>;
   id?: Maybe<Scalars['Int']>;
   type?: Maybe<MediaType>;
   isAdult?: Maybe<Scalars['Boolean']>;
@@ -4630,49 +4631,6 @@ export type AnimeInProgressQuery = (
   )> }
 );
 
-export type BrowsePageEnterQueryVariables = Exact<{
-  season?: Maybe<MediaSeason>;
-  seasonYear?: Maybe<Scalars['Int']>;
-  nextSeason?: Maybe<MediaSeason>;
-  nextYear?: Maybe<Scalars['Int']>;
-}>;
-
-
-export type BrowsePageEnterQuery = (
-  { __typename?: 'Query' }
-  & { trending?: Maybe<(
-    { __typename?: 'Page' }
-    & { media?: Maybe<Array<Maybe<(
-      { __typename?: 'Media' }
-      & MediaFragment
-    )>>> }
-  )>, season?: Maybe<(
-    { __typename?: 'Page' }
-    & { media?: Maybe<Array<Maybe<(
-      { __typename?: 'Media' }
-      & MediaFragment
-    )>>> }
-  )>, nextSeason?: Maybe<(
-    { __typename?: 'Page' }
-    & { media?: Maybe<Array<Maybe<(
-      { __typename?: 'Media' }
-      & MediaFragment
-    )>>> }
-  )>, popular?: Maybe<(
-    { __typename?: 'Page' }
-    & { media?: Maybe<Array<Maybe<(
-      { __typename?: 'Media' }
-      & MediaFragment
-    )>>> }
-  )>, top?: Maybe<(
-    { __typename?: 'Page' }
-    & { media?: Maybe<Array<Maybe<(
-      { __typename?: 'Media' }
-      & MediaFragment
-    )>>> }
-  )> }
-);
-
 export type GenresAndTagsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -4688,6 +4646,9 @@ export type GenresAndTagsQuery = (
 export type HomeNextSeasonQueryVariables = Exact<{
   nextSeason?: Maybe<MediaSeason>;
   nextYear?: Maybe<Scalars['Int']>;
+  page?: Maybe<Scalars['Int']>;
+  perPage?: Maybe<Scalars['Int']>;
+  isAdult?: Maybe<Scalars['Boolean']>;
 }>;
 
 
@@ -4702,12 +4663,17 @@ export type HomeNextSeasonQuery = (
   )> }
 );
 
-export type HomePopularQueryVariables = Exact<{ [key: string]: never; }>;
+export type HomeTopQueryVariables = Exact<{
+  page?: Maybe<Scalars['Int']>;
+  perPage?: Maybe<Scalars['Int']>;
+  isAdult?: Maybe<Scalars['Boolean']>;
+  format?: Maybe<Array<Maybe<MediaFormat>> | Maybe<MediaFormat>>;
+}>;
 
 
-export type HomePopularQuery = (
+export type HomeTopQuery = (
   { __typename?: 'Query' }
-  & { popular?: Maybe<(
+  & { top?: Maybe<(
     { __typename?: 'Page' }
     & { media?: Maybe<Array<Maybe<(
       { __typename?: 'Media' }
@@ -4719,6 +4685,9 @@ export type HomePopularQuery = (
 export type HomeSeasonQueryVariables = Exact<{
   season?: Maybe<MediaSeason>;
   seasonYear?: Maybe<Scalars['Int']>;
+  isAdult?: Maybe<Scalars['Boolean']>;
+  page?: Maybe<Scalars['Int']>;
+  perPage?: Maybe<Scalars['Int']>;
 }>;
 
 
@@ -4733,21 +4702,11 @@ export type HomeSeasonQuery = (
   )> }
 );
 
-export type HomeTopQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type HomeTopQuery = (
-  { __typename?: 'Query' }
-  & { trending?: Maybe<(
-    { __typename?: 'Page' }
-    & { media?: Maybe<Array<Maybe<(
-      { __typename?: 'Media' }
-      & MediaFragment
-    )>>> }
-  )> }
-);
-
-export type HomeTrendingQueryVariables = Exact<{ [key: string]: never; }>;
+export type HomeTrendingQueryVariables = Exact<{
+  page?: Maybe<Scalars['Int']>;
+  perPage?: Maybe<Scalars['Int']>;
+  isAdult?: Maybe<Scalars['Boolean']>;
+}>;
 
 
 export type HomeTrendingQuery = (
@@ -5495,8 +5454,8 @@ export type ToggleFavouriteMutationHookResult = ReturnType<typeof useToggleFavou
 export type ToggleFavouriteMutationResult = Apollo.MutationResult<ToggleFavouriteMutation>;
 export type ToggleFavouriteMutationOptions = Apollo.BaseMutationOptions<ToggleFavouriteMutation, ToggleFavouriteMutationVariables>;
 export const AdvancedSearchDocument = gql`
-    query AdvancedSearch($page: Int = 1, $id: Int, $type: MediaType = ANIME, $isAdult: Boolean = false, $search: String, $format: [MediaFormat], $status: MediaStatus, $countryOfOrigin: CountryCode, $source: MediaSource, $season: MediaSeason, $seasonYear: Int, $year: String, $onList: Boolean, $yearLesser: FuzzyDateInt, $yearGreater: FuzzyDateInt, $episodeLesser: Int, $episodeGreater: Int, $durationLesser: Int, $durationGreater: Int, $licensedBy: [String], $genres: [String], $excludedGenres: [String], $tags: [String], $excludedTags: [String], $minimumTagRank: Int, $sort: [MediaSort] = [POPULARITY_DESC, SCORE_DESC]) {
-  Page(page: $page, perPage: 20) {
+    query AdvancedSearch($page: Int = 1, $perPage: Int, $id: Int, $type: MediaType = ANIME, $isAdult: Boolean = false, $search: String, $format: [MediaFormat], $status: MediaStatus, $countryOfOrigin: CountryCode, $source: MediaSource, $season: MediaSeason, $seasonYear: Int, $year: String, $onList: Boolean, $yearLesser: FuzzyDateInt, $yearGreater: FuzzyDateInt, $episodeLesser: Int, $episodeGreater: Int, $durationLesser: Int, $durationGreater: Int, $licensedBy: [String], $genres: [String], $excludedGenres: [String], $tags: [String], $excludedTags: [String], $minimumTagRank: Int, $sort: [MediaSort] = [POPULARITY_DESC, SCORE_DESC]) {
+  Page(page: $page, perPage: $perPage) {
     pageInfo {
       total
       perPage
@@ -5595,6 +5554,7 @@ export const AdvancedSearchDocument = gql`
  * const { data, loading, error } = useAdvancedSearchQuery({
  *   variables: {
  *      page: // value for 'page'
+ *      perPage: // value for 'perPage'
  *      id: // value for 'id'
  *      type: // value for 'type'
  *      isAdult: // value for 'isAdult'
@@ -5707,78 +5667,6 @@ export function useAnimeInProgressLazyQuery(baseOptions?: Apollo.LazyQueryHookOp
 export type AnimeInProgressQueryHookResult = ReturnType<typeof useAnimeInProgressQuery>;
 export type AnimeInProgressLazyQueryHookResult = ReturnType<typeof useAnimeInProgressLazyQuery>;
 export type AnimeInProgressQueryResult = Apollo.QueryResult<AnimeInProgressQuery, AnimeInProgressQueryVariables>;
-export const BrowsePageEnterDocument = gql`
-    query BrowsePageEnter($season: MediaSeason, $seasonYear: Int, $nextSeason: MediaSeason, $nextYear: Int) {
-  trending: Page(page: 1, perPage: 6) {
-    media(sort: TRENDING_DESC, type: ANIME, isAdult: false) {
-      ...media
-    }
-  }
-  season: Page(page: 1, perPage: 6) {
-    media(
-      season: $season
-      seasonYear: $seasonYear
-      sort: POPULARITY_DESC
-      type: ANIME
-      isAdult: false
-    ) {
-      ...media
-    }
-  }
-  nextSeason: Page(page: 1, perPage: 6) {
-    media(
-      season: $nextSeason
-      seasonYear: $nextYear
-      sort: POPULARITY_DESC
-      type: ANIME
-      isAdult: false
-    ) {
-      ...media
-    }
-  }
-  popular: Page(page: 1, perPage: 6) {
-    media(sort: POPULARITY_DESC, type: ANIME, isAdult: false) {
-      ...media
-    }
-  }
-  top: Page(page: 1, perPage: 10) {
-    media(sort: SCORE_DESC, type: ANIME, isAdult: false) {
-      ...media
-    }
-  }
-}
-    ${MediaFragmentDoc}`;
-
-/**
- * __useBrowsePageEnterQuery__
- *
- * To run a query within a React component, call `useBrowsePageEnterQuery` and pass it any options that fit your needs.
- * When your component renders, `useBrowsePageEnterQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useBrowsePageEnterQuery({
- *   variables: {
- *      season: // value for 'season'
- *      seasonYear: // value for 'seasonYear'
- *      nextSeason: // value for 'nextSeason'
- *      nextYear: // value for 'nextYear'
- *   },
- * });
- */
-export function useBrowsePageEnterQuery(baseOptions?: Apollo.QueryHookOptions<BrowsePageEnterQuery, BrowsePageEnterQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<BrowsePageEnterQuery, BrowsePageEnterQueryVariables>(BrowsePageEnterDocument, options);
-      }
-export function useBrowsePageEnterLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<BrowsePageEnterQuery, BrowsePageEnterQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<BrowsePageEnterQuery, BrowsePageEnterQueryVariables>(BrowsePageEnterDocument, options);
-        }
-export type BrowsePageEnterQueryHookResult = ReturnType<typeof useBrowsePageEnterQuery>;
-export type BrowsePageEnterLazyQueryHookResult = ReturnType<typeof useBrowsePageEnterLazyQuery>;
-export type BrowsePageEnterQueryResult = Apollo.QueryResult<BrowsePageEnterQuery, BrowsePageEnterQueryVariables>;
 export const GenresAndTagsDocument = gql`
     query GenresAndTags {
   genres: GenreCollection
@@ -5818,14 +5706,14 @@ export type GenresAndTagsQueryHookResult = ReturnType<typeof useGenresAndTagsQue
 export type GenresAndTagsLazyQueryHookResult = ReturnType<typeof useGenresAndTagsLazyQuery>;
 export type GenresAndTagsQueryResult = Apollo.QueryResult<GenresAndTagsQuery, GenresAndTagsQueryVariables>;
 export const HomeNextSeasonDocument = gql`
-    query HomeNextSeason($nextSeason: MediaSeason, $nextYear: Int) {
-  nextSeason: Page(page: 1, perPage: 21) {
+    query HomeNextSeason($nextSeason: MediaSeason, $nextYear: Int, $page: Int, $perPage: Int, $isAdult: Boolean) {
+  nextSeason: Page(page: $page, perPage: $perPage) {
     media(
       season: $nextSeason
       seasonYear: $nextYear
       sort: POPULARITY_DESC
       type: ANIME
-      isAdult: false
+      isAdult: $isAdult
     ) {
       ...media
     }
@@ -5847,6 +5735,9 @@ export const HomeNextSeasonDocument = gql`
  *   variables: {
  *      nextSeason: // value for 'nextSeason'
  *      nextYear: // value for 'nextYear'
+ *      page: // value for 'page'
+ *      perPage: // value for 'perPage'
+ *      isAdult: // value for 'isAdult'
  *   },
  * });
  */
@@ -5861,10 +5752,10 @@ export function useHomeNextSeasonLazyQuery(baseOptions?: Apollo.LazyQueryHookOpt
 export type HomeNextSeasonQueryHookResult = ReturnType<typeof useHomeNextSeasonQuery>;
 export type HomeNextSeasonLazyQueryHookResult = ReturnType<typeof useHomeNextSeasonLazyQuery>;
 export type HomeNextSeasonQueryResult = Apollo.QueryResult<HomeNextSeasonQuery, HomeNextSeasonQueryVariables>;
-export const HomePopularDocument = gql`
-    query HomePopular {
-  popular: Page(page: 1, perPage: 21) {
-    media(sort: POPULARITY_DESC, type: ANIME, isAdult: false) {
+export const HomeTopDocument = gql`
+    query HomeTop($page: Int, $perPage: Int, $isAdult: Boolean, $format: [MediaFormat]) {
+  top: Page(page: $page, perPage: $perPage) {
+    media(sort: [SCORE_DESC], type: ANIME, isAdult: $isAdult, format_in: $format) {
       ...media
     }
   }
@@ -5872,40 +5763,44 @@ export const HomePopularDocument = gql`
     ${MediaFragmentDoc}`;
 
 /**
- * __useHomePopularQuery__
+ * __useHomeTopQuery__
  *
- * To run a query within a React component, call `useHomePopularQuery` and pass it any options that fit your needs.
- * When your component renders, `useHomePopularQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useHomeTopQuery` and pass it any options that fit your needs.
+ * When your component renders, `useHomeTopQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useHomePopularQuery({
+ * const { data, loading, error } = useHomeTopQuery({
  *   variables: {
+ *      page: // value for 'page'
+ *      perPage: // value for 'perPage'
+ *      isAdult: // value for 'isAdult'
+ *      format: // value for 'format'
  *   },
  * });
  */
-export function useHomePopularQuery(baseOptions?: Apollo.QueryHookOptions<HomePopularQuery, HomePopularQueryVariables>) {
+export function useHomeTopQuery(baseOptions?: Apollo.QueryHookOptions<HomeTopQuery, HomeTopQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<HomePopularQuery, HomePopularQueryVariables>(HomePopularDocument, options);
+        return Apollo.useQuery<HomeTopQuery, HomeTopQueryVariables>(HomeTopDocument, options);
       }
-export function useHomePopularLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<HomePopularQuery, HomePopularQueryVariables>) {
+export function useHomeTopLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<HomeTopQuery, HomeTopQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<HomePopularQuery, HomePopularQueryVariables>(HomePopularDocument, options);
+          return Apollo.useLazyQuery<HomeTopQuery, HomeTopQueryVariables>(HomeTopDocument, options);
         }
-export type HomePopularQueryHookResult = ReturnType<typeof useHomePopularQuery>;
-export type HomePopularLazyQueryHookResult = ReturnType<typeof useHomePopularLazyQuery>;
-export type HomePopularQueryResult = Apollo.QueryResult<HomePopularQuery, HomePopularQueryVariables>;
+export type HomeTopQueryHookResult = ReturnType<typeof useHomeTopQuery>;
+export type HomeTopLazyQueryHookResult = ReturnType<typeof useHomeTopLazyQuery>;
+export type HomeTopQueryResult = Apollo.QueryResult<HomeTopQuery, HomeTopQueryVariables>;
 export const HomeSeasonDocument = gql`
-    query HomeSeason($season: MediaSeason, $seasonYear: Int) {
-  season: Page(page: 1, perPage: 21) {
+    query HomeSeason($season: MediaSeason, $seasonYear: Int, $isAdult: Boolean, $page: Int, $perPage: Int) {
+  season: Page(page: $page, perPage: $perPage) {
     media(
       season: $season
       seasonYear: $seasonYear
       sort: POPULARITY_DESC
       type: ANIME
-      isAdult: false
+      isAdult: $isAdult
     ) {
       ...media
     }
@@ -5927,6 +5822,9 @@ export const HomeSeasonDocument = gql`
  *   variables: {
  *      season: // value for 'season'
  *      seasonYear: // value for 'seasonYear'
+ *      isAdult: // value for 'isAdult'
+ *      page: // value for 'page'
+ *      perPage: // value for 'perPage'
  *   },
  * });
  */
@@ -5941,46 +5839,10 @@ export function useHomeSeasonLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions
 export type HomeSeasonQueryHookResult = ReturnType<typeof useHomeSeasonQuery>;
 export type HomeSeasonLazyQueryHookResult = ReturnType<typeof useHomeSeasonLazyQuery>;
 export type HomeSeasonQueryResult = Apollo.QueryResult<HomeSeasonQuery, HomeSeasonQueryVariables>;
-export const HomeTopDocument = gql`
-    query HomeTop {
-  trending: Page(page: 1, perPage: 21) {
-    media(sort: TRENDING_DESC, type: ANIME, isAdult: false) {
-      ...media
-    }
-  }
-}
-    ${MediaFragmentDoc}`;
-
-/**
- * __useHomeTopQuery__
- *
- * To run a query within a React component, call `useHomeTopQuery` and pass it any options that fit your needs.
- * When your component renders, `useHomeTopQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useHomeTopQuery({
- *   variables: {
- *   },
- * });
- */
-export function useHomeTopQuery(baseOptions?: Apollo.QueryHookOptions<HomeTopQuery, HomeTopQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<HomeTopQuery, HomeTopQueryVariables>(HomeTopDocument, options);
-      }
-export function useHomeTopLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<HomeTopQuery, HomeTopQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<HomeTopQuery, HomeTopQueryVariables>(HomeTopDocument, options);
-        }
-export type HomeTopQueryHookResult = ReturnType<typeof useHomeTopQuery>;
-export type HomeTopLazyQueryHookResult = ReturnType<typeof useHomeTopLazyQuery>;
-export type HomeTopQueryResult = Apollo.QueryResult<HomeTopQuery, HomeTopQueryVariables>;
 export const HomeTrendingDocument = gql`
-    query HomeTrending {
-  trending: Page(page: 1, perPage: 21) {
-    media(sort: TRENDING_DESC, type: ANIME, isAdult: false) {
+    query HomeTrending($page: Int, $perPage: Int, $isAdult: Boolean) {
+  trending: Page(page: $page, perPage: $perPage) {
+    media(sort: TRENDING_DESC, type: ANIME, isAdult: $isAdult) {
       ...media
     }
   }
@@ -5999,6 +5861,9 @@ export const HomeTrendingDocument = gql`
  * @example
  * const { data, loading, error } = useHomeTrendingQuery({
  *   variables: {
+ *      page: // value for 'page'
+ *      perPage: // value for 'perPage'
+ *      isAdult: // value for 'isAdult'
  *   },
  * });
  */

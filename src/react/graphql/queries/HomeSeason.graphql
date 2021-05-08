@@ -1,14 +1,11 @@
-query HomeSeason(
-  $season: MediaSeason
-  $seasonYear: Int
-) {
-  season: Page(page: 1, perPage: 21) {
+query HomeSeason($season: MediaSeason, $seasonYear: Int, $isAdult: Boolean, $page:Int, $perPage:Int) {
+  season: Page(page: $page, perPage: $perPage) {
     media(
       season: $season
       seasonYear: $seasonYear
       sort: POPULARITY_DESC
       type: ANIME
-      isAdult: false
+      isAdult: $isAdult
     ) {
       ...media
     }

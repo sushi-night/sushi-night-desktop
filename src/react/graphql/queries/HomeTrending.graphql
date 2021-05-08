@@ -1,6 +1,6 @@
-query HomeTrending {
-  trending: Page(page: 1, perPage: 21) {
-    media(sort: TRENDING_DESC, type: ANIME, isAdult: false) {
+query HomeTrending($page: Int, $perPage: Int, $isAdult: Boolean) {
+  trending: Page(page: $page, perPage: $perPage) {
+    media(sort: TRENDING_DESC, type: ANIME, isAdult: $isAdult) {
       ...media
     }
   }

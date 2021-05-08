@@ -171,7 +171,7 @@ export const AnimeDetails: React.FC = () => {
                             <Heading as="h6" size="sm">
                               Format
                             </Heading>
-                            <Text>{data?.Media?.format}</Text>
+                            <Text>{mapEnums(data?.Media?.format)}</Text>
                           </Box>
                           {data?.Media?.duration ? (
                             <Box mt={2} color={textColor}>

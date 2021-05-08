@@ -6,10 +6,12 @@ import {
   HStack,
   SimpleGrid,
   Text,
+  Wrap,
+  WrapItem,
 } from "@chakra-ui/layout";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { AiOutlineSearch } from "react-icons/ai";
-import { useHistory } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import { AnimePosterFromSearch } from "../../components/AnimePoster";
 import { SelectFormat } from "../../components/SelectFormat";
 import { SelectGenres } from "../../components/SelectGenres";
@@ -20,19 +22,24 @@ import {
   MediaFormat,
   MediaSeason,
   useAdvancedSearchQuery,
+  useHomeTopQuery,
+  MediaFragment,
+  useHomeTrendingQuery,
 } from "../../generated/graphql";
 import { SearchQueryAnimeResult } from "../../generated/custom";
 import { useAnimeState } from "../../zustand";
 import { Skeleton } from "@chakra-ui/skeleton";
+import { Tag, TagCloseButton, TagLabel } from "@chakra-ui/tag";
 
-// interface BrowseParams {
-//   filter?: string | undefined;
-// }
+interface BrowseParams {
+  filter?: string | undefined;
+}
 
 export const Browse: React.FC = () => {
+  const { filter } = useParams<BrowseParams>();
+  console.log("filter",filter)
   const { setAnimeId } = useAnimeState();
   const { push } = useHistory();
-  //const { filter } = useParams<BrowseParams>(); todo: use this
   const [searchGenresNTags, setSearchGenresNTags] = useState<{
     genres: string[];
     tags: string[];
@@ -64,6 +71,15 @@ export const Browse: React.FC = () => {
     fetchPolicy: "network-only",
   });
 
+  switch (filter) {
+    case "top100":
+      return <Top100 />;
+    case "trending":
+      return <Trending />;
+    case "topMovies":
+      return <Top100 movies />;
+  }
+
   return (
     <Box>
       <HStack
@@ -89,6 +105,7 @@ export const Browse: React.FC = () => {
           </InputGroup>
         </Box>
         <SelectGenres
+          genresOnly={false}
           _onSelectGenre={(genre: string) => {
             if (genre === "Any") {
               setSearchGenresNTags({ tags: [], genres: [] });
@@ -148,7 +165,53 @@ export const Browse: React.FC = () => {
           }}
         />
       </HStack>
-      <Flex pt={5}>
+      <Wrap pt={4} px={24}>
+        {searchGenresNTags.genres.map((genre) => (
+          <WrapItem key={genre}>
+            <HStack spacing={4}>
+              <Tag
+                size="md"
+                borderRadius="xl"
+                variant="solid"
+                colorScheme="green"
+              >
+                <TagLabel>{genre}</TagLabel>
+                <TagCloseButton
+                  onClick={() => {
+                    setSearchGenresNTags((prevState) => ({
+                      tags: [...prevState.tags],
+                      genres: prevState.genres.filter((g) => g !== genre),
+                    }));
+                  }}
+                />
+              </Tag>
+            </HStack>
+          </WrapItem>
+        ))}
+        {searchGenresNTags.tags.map((tag) => (
+          <WrapItem key={tag}>
+            <HStack spacing={4} px={1}>
+              <Tag
+                size="md"
+                borderRadius="xl"
+                variant="solid"
+                colorScheme="green"
+              >
+                <TagLabel>{tag}</TagLabel>
+                <TagCloseButton
+                  onClick={() => {
+                    setSearchGenresNTags((prevState) => ({
+                      tags: prevState.tags.filter((t) => t !== tag),
+                      genres: [...prevState.genres],
+                    }));
+                  }}
+                />
+              </Tag>
+            </HStack>
+          </WrapItem>
+        ))}
+      </Wrap>
+      <Flex pt={2} px={1}>
         {error ? (
           <Text color="red">{error.name}</Text>
         ) : (
@@ -174,14 +237,112 @@ export const Browse: React.FC = () => {
   );
 };
 
-// switch (filter) {
-//     case "top100": //run top100 query average_score desc.
-//       return <div>top100</div>;
-//     case "trending": //run trending query
-//       return <div>trending</div>;
-//     case "topMovies": //run top100 query avg_score desc + type=movie
-//       return <div>topMovies</div>;
-//     default:
-//       //no params provided
-//       return <div>noparams</div>;
-//   }
+interface ITop100Props {
+  movies?: boolean;
+}
+const Top100: React.FC<ITop100Props> = ({ movies }) => {
+  const [animes, setAnimes] = useState<
+    Array<{ __typename?: "Media" } & MediaFragment>
+  >();
+  const [page, setPage] = useState<number>(1);
+
+  const { loading, data, error } = useHomeTopQuery({
+    variables: {
+      perPage: 50, //maximum allowed to fetch is 50
+      page,
+      format: movies ? MediaFormat.Movie : undefined,
+    },
+    fetchPolicy: "network-only",
+  });
+
+  useEffect(() => {
+    if (page < 2) {
+      setPage(page + 1);
+    }
+  }, [page]);
+
+  useEffect(() => {
+    if (data) {
+      let _animes = animes || [];
+      setAnimes(
+        _animes.concat(
+          data?.top?.media as Array<{ __typename?: "Media" } & MediaFragment>
+        )
+      );
+    }
+  }, [data]);
+
+  const { setAnimeId } = useAnimeState();
+  const { push } = useHistory();
+
+  return (
+    <Box>
+      <Heading py={4} alignSelf="center" textAlign="center">
+        Top 100 {movies ? "Movies" : "Anime"}
+      </Heading>
+      {error ? (
+        <Text color="red">{error.name}</Text>
+      ) : (
+        <Skeleton isLoaded={!loading} w="full" h={80}>
+          <Box px={1} pt={2}>
+            <SimpleGrid columns={5} px={1} spacing={5}>
+              {animes
+                ? animes.map((media) => (
+                    <AnimePosterFromSearch
+                      key={media!.id}
+                      anime={media as SearchQueryAnimeResult}
+                      _onClick={() => {
+                        setAnimeId(media!.id);
+                        push("/w/animeDetails");
+                      }}
+                    />
+                  ))
+                : null}
+            </SimpleGrid>
+          </Box>
+        </Skeleton>
+      )}
+    </Box>
+  );
+};
+
+const Trending: React.FC = () => {
+  const { loading, data, error } = useHomeTrendingQuery({
+    variables: {
+      perPage: 24,
+    },
+  });
+
+  const { setAnimeId } = useAnimeState();
+  const { push } = useHistory();
+  
+  return (
+    <Box>
+      <Heading py={4} alignSelf="center" textAlign="center">
+        Trending Anime
+      </Heading>
+      {error ? (
+        <Text color="red">{error.name}</Text>
+      ) : (
+        <Skeleton isLoaded={!loading} w="full" h={80}>
+          <Box px={1} pt={2}>
+            <SimpleGrid columns={5} padding={2} spacing={5}>
+              {data?.trending?.media
+                ? data.trending.media.map((media) => (
+                    <AnimePosterFromSearch
+                      key={media!.id}
+                      anime={media as SearchQueryAnimeResult}
+                      _onClick={() => {
+                        setAnimeId(media!.id);
+                        push("/w/animeDetails");
+                      }}
+                    />
+                  ))
+                : null}
+            </SimpleGrid>
+          </Box>
+        </Skeleton>
+      )}
+    </Box>
+  );
+};

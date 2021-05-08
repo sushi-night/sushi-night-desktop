@@ -5,11 +5,13 @@ import { useGenresAndTagsQuery } from "../generated/graphql";
 interface ISelectGenres {
   _onSelectGenre: (genre: string) => void;
   _onSelectTag: (tag: string) => void;
+  genresOnly: boolean;
 }
 
 export const SelectGenres: React.FC<ISelectGenres> = ({
   _onSelectGenre,
   _onSelectTag,
+  genresOnly,
 }) => {
   const { data, loading, error } = useGenresAndTagsQuery();
 
@@ -45,11 +47,13 @@ export const SelectGenres: React.FC<ISelectGenres> = ({
               {genre}
             </option>
           ))}
-          {data?.tags?.map((tag) => (
-            <option key={tag?.name} value={tag?.name}>
-              {tag?.name}
-            </option>
-          ))}
+          {!genresOnly
+            ? data?.tags?.map((tag) => (
+                <option key={tag?.name} value={tag?.name}>
+                  {tag?.name}
+                </option>
+              ))
+            : null}
         </Select>
       </Skeleton>
     </Box>

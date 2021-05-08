@@ -6,10 +6,8 @@ import "focus-visible/dist/focus-visible"; //get rid of the ugly blue outlines o
 
 ReactDOM.render(
   <div style={{ height: "100vh" }}>
-    <React.StrictMode>
-      <ColorModeScript />
-      <App />
-    </React.StrictMode>
+    <ColorModeScript />
+    <App />
   </div>,
   document.getElementById("root")
 );

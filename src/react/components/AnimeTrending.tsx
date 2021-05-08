@@ -1,14 +1,18 @@
 import { Box, Text } from "@chakra-ui/layout";
 import { Skeleton } from "@chakra-ui/skeleton";
 import React from "react";
-import {
-  useHomeTrendingQuery,
-} from "../generated/graphql";
+import { useHomeTrendingQuery } from "../generated/graphql";
 import { AnimePosterHome } from "./AnimePoster";
 import { HorizontalScroll } from "./HorizontalScroll";
 
-export const AnimeTrending: React.FC = () => {
-  const { loading, error, data } = useHomeTrendingQuery();
+interface AnimeTrendingProps {
+  perPage: number;
+}
+
+export const AnimeTrending: React.FC<AnimeTrendingProps> = ({ perPage }) => {
+  const { loading, error, data } = useHomeTrendingQuery({
+    variables: { perPage },
+  });
 
   return (
     <Box>

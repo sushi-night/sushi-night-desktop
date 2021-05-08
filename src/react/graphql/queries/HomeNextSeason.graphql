@@ -1,14 +1,17 @@
 query HomeNextSeason(
   $nextSeason: MediaSeason
   $nextYear: Int
+  $page: Int
+  $perPage: Int
+  $isAdult: Boolean
 ) {
-  nextSeason: Page(page: 1, perPage: 21) {
+  nextSeason: Page(page: $page, perPage: $perPage) {
     media(
       season: $nextSeason
       seasonYear: $nextYear
       sort: POPULARITY_DESC
       type: ANIME
-      isAdult: false
+      isAdult: $isAdult
     ) {
       ...media
     }

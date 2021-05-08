@@ -1,6 +1,16 @@
-query HomeTop {
-  trending: Page(page: 1, perPage: 21) {
-    media(sort: TRENDING_DESC, type: ANIME, isAdult: false) {
+query HomeTop(
+  $page: Int
+  $perPage: Int
+  $isAdult: Boolean
+  $format: [MediaFormat]
+) {
+  top: Page(page: $page, perPage: $perPage) {
+    media(
+      sort: [SCORE_DESC]
+      type: ANIME
+      isAdult: $isAdult
+      format_in: $format
+    ) {
       ...media
     }
   }

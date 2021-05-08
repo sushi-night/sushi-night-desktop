@@ -1,12 +1,18 @@
 import { Box, Text } from "@chakra-ui/layout";
 import { Skeleton } from "@chakra-ui/skeleton";
 import React from "react";
-import { useHomePopularQuery } from "../generated/graphql";
+import { useHomeTopQuery } from "../generated/graphql";
 import { AnimePosterHome } from "./AnimePoster";
 import { HorizontalScroll } from "./HorizontalScroll";
 
-export const AnimePopular: React.FC = () => {
-  const { loading, error, data } = useHomePopularQuery();
+interface AnimeTopProps {
+  perPage: number;
+}
+
+export const AnimeTop: React.FC<AnimeTopProps> = ({ perPage }) => {
+  const { loading, error, data } = useHomeTopQuery({
+    variables: { perPage },
+  });
 
   return (
     <Box>
@@ -14,7 +20,7 @@ export const AnimePopular: React.FC = () => {
         {error ? <Text color="red">{error.name}</Text> : null}
         <HorizontalScroll>
           {data
-            ? data.popular?.media?.map((media) =>
+            ? data.top?.media?.map((media) =>
                 media ? <AnimePosterHome key={media.id} anime={media} /> : null
               )
             : null}

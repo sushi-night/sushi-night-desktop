@@ -1,5 +1,6 @@
 query AdvancedSearch(
   $page: Int = 1
+  $perPage: Int
   $id: Int
   $type: MediaType = ANIME
   $isAdult: Boolean = false
@@ -26,7 +27,7 @@ query AdvancedSearch(
   $minimumTagRank: Int
   $sort: [MediaSort] = [POPULARITY_DESC, SCORE_DESC]
 ) {
-  Page(page: $page, perPage: 20) {
+  Page(page: $page, perPage: $perPage) {
     pageInfo {
       total
       perPage
