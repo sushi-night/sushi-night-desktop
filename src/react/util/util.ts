@@ -3,6 +3,7 @@ import {
   FuzzyDate,
   Maybe,
   Media,
+  MediaListCollection,
   MediaListStatus,
   MediaSeason,
   MediaStatus,
@@ -325,4 +326,30 @@ export const setUserScores = (
       break;
     }
   }
+};
+
+type MediaListTotal = {
+  name: Maybe<string | undefined>;
+  total: number | undefined;
+};
+
+export type MediaListCollectionTotal = {
+  lists: MediaListTotal[];
+  all: number;
+};
+
+export const getMediaListTotals = (
+  medialistcollection: Maybe<MediaListCollection | undefined>
+): MediaListCollectionTotal => {
+  var all: number = 0;
+  var lists: MediaListTotal[] = [];
+
+  medialistcollection?.lists?.forEach((list) => {
+    lists.push({ name: list?.name, total: list?.entries?.length });
+    if (list?.entries?.length) {
+      all += list.entries.length;
+    }
+  });
+
+  return { lists, all };
 };

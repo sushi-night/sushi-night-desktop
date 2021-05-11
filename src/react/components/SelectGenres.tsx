@@ -5,7 +5,7 @@ import { useGenresAndTagsQuery } from "../generated/graphql";
 interface ISelectGenres {
   _onSelectGenre: (genre: string) => void;
   _onSelectTag: (tag: string) => void;
-  genresOnly: boolean;
+  genresOnly?: boolean;
 }
 
 export const SelectGenres: React.FC<ISelectGenres> = ({

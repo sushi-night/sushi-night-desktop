@@ -37,7 +37,7 @@ interface BrowseParams {
 
 export const Browse: React.FC = () => {
   const { filter } = useParams<BrowseParams>();
-  console.log("filter",filter)
+
   const { setAnimeId } = useAnimeState();
   const { push } = useHistory();
   const [searchGenresNTags, setSearchGenresNTags] = useState<{
@@ -105,7 +105,6 @@ export const Browse: React.FC = () => {
           </InputGroup>
         </Box>
         <SelectGenres
-          genresOnly={false}
           _onSelectGenre={(genre: string) => {
             if (genre === "Any") {
               setSearchGenresNTags({ tags: [], genres: [] });
@@ -241,9 +240,8 @@ interface ITop100Props {
   movies?: boolean;
 }
 const Top100: React.FC<ITop100Props> = ({ movies }) => {
-  const [animes, setAnimes] = useState<
-    Array<{ __typename?: "Media" } & MediaFragment>
-  >();
+  const [animes, setAnimes] =
+    useState<Array<{ __typename?: "Media" } & MediaFragment>>();
   const [page, setPage] = useState<number>(1);
 
   const { loading, data, error } = useHomeTopQuery({
@@ -315,7 +313,7 @@ const Trending: React.FC = () => {
 
   const { setAnimeId } = useAnimeState();
   const { push } = useHistory();
-  
+
   return (
     <Box>
       <Heading py={4} alignSelf="center" textAlign="center">

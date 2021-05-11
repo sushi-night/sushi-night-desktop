@@ -34,52 +34,49 @@ export const Watch: React.FC = () => {
 
   useEffect(() => {
     let isMounted = true;
-    if (watch?.gogoId && !option) {
+    if (isMounted && watch?.gogoId && !option) {
       setLoading(true);
       setCurrentOption(undefined);
       setOptions(null);
       (async () => {
         try {
           const opts = await getEpisodeLinks(watch.gogoId!, watch.episode);
-          if (isMounted) {
-            setOptions(
-              opts.filter((opt) => !opt.link.startsWith("https://gogo-cdn.com"))
-            );
-            setCurrentOption(opts[0].link);
-            setLoading(false);
-            setError(null);
+          setOptions(
+            opts.filter((opt) => !opt.link.startsWith("https://gogo-cdn.com"))
+          );
+          setCurrentOption(opts[0].link);
+          setLoading(false);
+          setError(null);
 
-            const entry = await updateEntry({
-              variables: {
-                id: watch.anime.mediaListEntry?.id
-                  ? watch.anime.mediaListEntry?.id
-                  : undefined,
-                mediaId: watch.anime.id,
-                status: MediaListStatus.Current,
-                progress: watch.episode,
+          const entry = await updateEntry({
+            variables: {
+              id: watch.anime.mediaListEntry?.id
+                ? watch.anime.mediaListEntry?.id
+                : undefined,
+              mediaId: watch.anime.id,
+              status:
+                watch.anime.mediaListEntry?.status === MediaListStatus.Repeating
+                  ? MediaListStatus.Repeating
+                  : MediaListStatus.Current,
+              progress: watch.episode,
+            },
+          });
+
+          if (entry.data?.SaveMediaListEntry && authenticated) {
+            setWatch({
+              ...watch,
+              anime: {
+                ...watch.anime,
+                mediaListEntry: {
+                  id: entry.data?.SaveMediaListEntry?.id,
+                  userId: authenticated,
+                  mediaId: watch.anime.id,
+                },
               },
             });
-
-            if (entry.data?.SaveMediaListEntry && authenticated) {
-              if (isMounted) {
-                setWatch({
-                  ...watch,
-                  anime: {
-                    ...watch.anime,
-                    mediaListEntry: {
-                      id: entry.data?.SaveMediaListEntry?.id,
-                      userId: authenticated,
-                      mediaId: watch.anime.id,
-                    },
-                  },
-                });
-              }
-            }
           }
         } catch (err) {
-          if (isMounted) {
-            setError(err.toString());
-          }
+          setError(err.toString());
         }
       })();
     } else if (!watch?.gogoId) {
@@ -87,14 +84,10 @@ export const Watch: React.FC = () => {
         try {
           if (watch?.anime) {
             const result = await getIdFromGogo(watch.anime);
-            if (isMounted) {
-              setWatch({ ...watch, gogoId: result });
-            }
+            setWatch({ ...watch, gogoId: result });
           }
         } catch (err) {
-          if (isMounted) {
-            setError(err.toString());
-          }
+          setError(err.toString());
         }
       })();
     }

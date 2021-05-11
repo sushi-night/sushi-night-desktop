@@ -5,7 +5,7 @@ import { MediaFormat } from "../generated/graphql";
 import { mapEnums } from "../util/util";
 
 interface ISelectFormat {
-  _onSelect: (year: string) => void;
+  _onSelect: (format: string) => void;
 }
 
 const formats = Object.values(MediaFormat).filter(
