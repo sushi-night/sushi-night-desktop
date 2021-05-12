@@ -5,18 +5,26 @@ import {
   Grid,
   GridItem,
   Heading,
+  SimpleGrid,
   Text,
   VStack,
 } from "@chakra-ui/layout";
 import {
   Button,
+  HStack,
   Input,
   InputGroup,
   InputLeftElement,
   Spinner,
+  Tag,
+  TagCloseButton,
+  TagLabel,
+  Wrap,
+  WrapItem,
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { AiOutlineSearch } from "react-icons/ai";
+import { AnimePosterFromList } from "../../components/AnimePoster";
 import { SelectCountry } from "../../components/SelectCountryOfOrigin";
 import { SelectFormat } from "../../components/SelectFormat";
 import { SelectGenres } from "../../components/SelectGenres";
@@ -139,11 +147,57 @@ export const AnimeList: React.FC = () => {
             </Flex>
           </GridItem>
           <GridItem colSpan={4}>
-            <Flex>selected genres</Flex>
-            <Flex>results</Flex>
+            <Flex>
+              <Wrap pt={4} px={24}>
+                {genres.map((genre) => (
+                  <WrapItem key={genre}>
+                    <HStack spacing={4}>
+                      <Tag
+                        size="md"
+                        borderRadius="xl"
+                        variant="solid"
+                        colorScheme="green"
+                      >
+                        <TagLabel>{genre}</TagLabel>
+                        <TagCloseButton
+                          onClick={() => {
+                            setGenres(genres.filter((g) => g !== genre));
+                          }}
+                        />
+                      </Tag>
+                    </HStack>
+                  </WrapItem>
+                ))}
+              </Wrap>
+            </Flex>
+            <Flex>
+              {loading ? (
+                <Spinner />
+              ) : (
+                <Box>
+                  {Object.values(MediaListStatus).map((status) => (
+                    <Box>
+                      <Heading as="h4" size="lg" pb={4}>
+                        {MapMediaListStatus(status)}
+                      </Heading>
+                      <SimpleGrid columns={5} padding={2} spacing={5}>
+                        {data?.MediaListCollection?.lists
+                          ?.find((l) => l?.name === MapMediaListStatus(status))
+                          ?.entries?.map((anime) => (
+                            <AnimePosterFromList
+                              key={anime?.id}
+                              anime={anime}
+                            />
+                          ))}
+                      </SimpleGrid>
+                    </Box>
+                  ))}
+                </Box>
+              )}
+            </Flex>
           </GridItem>
           <GridItem colSpan={1}>
-            <Flex pt={6}>
+            <Flex pt={6} pr={1}>
               <VStack>
                 <SelectFormat
                   _onSelect={(format: string) => {

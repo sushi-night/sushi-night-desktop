@@ -66,7 +66,8 @@ export const Browse: React.FC = () => {
       searchGenresNTags.genres.length ||
       searchGenresNTags.tags.length ||
       searchSeason ||
-      searchQuery.length > 2
+      searchQuery.length > 2 ||
+      filter !== undefined
     ),
     fetchPolicy: "network-only",
   });

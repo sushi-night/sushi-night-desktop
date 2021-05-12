@@ -30,6 +30,7 @@ query MediaListCollection($userId: Int!, $type: MediaType!) {
 fragment mediaListEntry on MediaList {
   id
   mediaId
+  progress
   status
   score
   repeat

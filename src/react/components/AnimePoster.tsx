@@ -1,5 +1,5 @@
 import { Image } from "@chakra-ui/image";
-import { Badge, Box, Flex, Text } from "@chakra-ui/layout";
+import { Badge, Box, Flex, Spacer, Text } from "@chakra-ui/layout";
 import { Tooltip } from "@chakra-ui/tooltip";
 import React from "react";
 import { useHistory } from "react-router";
@@ -13,6 +13,7 @@ import {
   MediaCoverImage,
   MediaTitle,
   MediaFragment,
+  MediaListEntryFragment,
 } from "../generated/graphql";
 import { useAnimeState, useWatchState } from "../zustand";
 
@@ -217,7 +218,7 @@ export const AnimePosterHome: React.FC<IAnimePosterHome> = ({ anime }) => {
         </Badge>
       </Box>
       <Box>
-        <Tooltip placement="bottom" label={anime!.title?.userPreferred}>
+        <Tooltip placement="bottom" label={anime?.title?.userPreferred}>
           <Box>
             <Image
               src={anime!.coverImage?.extraLarge || ""}
@@ -229,6 +230,68 @@ export const AnimePosterHome: React.FC<IAnimePosterHome> = ({ anime }) => {
             <Text fontSize={16} textAlign="center" w="full" noOfLines={1}>
               {anime!.title?.userPreferred}
             </Text>
+          </Box>
+        </Tooltip>
+      </Box>
+    </Box>
+  );
+};
+
+interface IAnimePosterFromList {
+  anime: Maybe<{ __typename?: "MediaList" } & MediaListEntryFragment>;
+}
+
+export const AnimePosterFromList: React.FC<IAnimePosterFromList> = ({
+  anime,
+}) => {
+  const { setAnimeId } = useAnimeState();
+  const { push } = useHistory();
+
+  return (
+    <Box
+      w={32}
+      bg="blackAlpha.600"
+      shadow="lg"
+      rounded="md"
+      overflow="hidden"
+      cursor="pointer"
+      pos="relative"
+      onClick={() => {
+        setAnimeId(anime!.mediaId);
+        push("/w/animeDetails");
+      }}
+    >
+      <Box pos="absolute" alignItems="flex-end" right={1}>
+        <Badge
+          textAlign="center"
+          variant="solid"
+          colorScheme="teal"
+          alignSelf="flex-end"
+          rounded="lg"
+        >
+          {`${anime?.media?.startDate?.year + " " + anime?.media?.format}`}
+        </Badge>
+      </Box>
+      <Box>
+        <Tooltip placement="bottom" label={anime?.media?.title?.userPreferred}>
+          <Box>
+            <Image
+              src={anime!.media?.coverImage?.extraLarge || ""}
+              alt="avatar"
+              fit="cover"
+              w={32}
+              h={48}
+            />
+            <Text fontSize={16} textAlign="center" w="full" noOfLines={1}>
+              {anime!.media?.title?.userPreferred}
+            </Text>
+            <Flex>
+              <Text p={1}>
+                {`${anime?.progress + "/" + (anime?.media?.episodes || "?")}`}
+              </Text>
+              <Spacer/>
+              <Text p={1}>{anime?.score}</Text>
+            </Flex>
           </Box>
         </Tooltip>
       </Box>

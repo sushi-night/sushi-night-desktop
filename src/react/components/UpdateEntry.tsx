@@ -29,6 +29,7 @@ import {
 import { getUserScores, MapMediaListStatus, options } from "../util/util";
 import { useAnimeState } from "../zustand";
 import { DatePicker } from "./DatePicker";
+import { SelectStatus } from "./SelectStatus";
 
 interface IUpdateEntryProps {
   entry?: Maybe<
@@ -51,13 +52,13 @@ interface IUpdateEntryProps {
       }
   >;
   maxEpisodes: number;
-  _onDelete: () => void;
+  _onUpdate: () => void;
 }
 
 export const UpdateEntry: React.FC<IUpdateEntryProps> = ({
   entry,
   maxEpisodes,
-  _onDelete,
+  _onUpdate,
 }) => {
   const { animeId } = useAnimeState();
   const saveEntry = useSaveMediaListEntryMutation();
@@ -143,7 +144,7 @@ export const UpdateEntry: React.FC<IUpdateEntryProps> = ({
               try {
                 await deleteEntry[0]({ variables: { id: entry?.id } });
                 setError(null);
-                _onDelete();
+                _onUpdate();
               } catch (err) {
                 setError(err);
               }
@@ -187,63 +188,6 @@ export const UpdateEntry: React.FC<IUpdateEntryProps> = ({
   );
 };
 
-interface ISelectStatus {
-  _onSelectStatus: (status: MediaListStatus | null | undefined) => void;
-  _default: {
-    value: MediaListStatus | null | undefined;
-    label: string;
-  };
-}
-
-const statusesOptions = [
-  {
-    value: MediaListStatus.Current,
-    label: MapMediaListStatus(MediaListStatus.Current),
-  },
-  {
-    value: MediaListStatus.Planning,
-    label: MapMediaListStatus(MediaListStatus.Planning),
-  },
-  {
-    value: MediaListStatus.Completed,
-    label: MapMediaListStatus(MediaListStatus.Completed),
-  },
-  {
-    value: MediaListStatus.Repeating,
-    label: MapMediaListStatus(MediaListStatus.Repeating),
-  },
-  {
-    value: MediaListStatus.Paused,
-    label: MapMediaListStatus(MediaListStatus.Paused),
-  },
-  {
-    value: MediaListStatus.Dropped,
-    label: MapMediaListStatus(MediaListStatus.Dropped),
-  },
-];
-export const SelectStatus: React.FC<ISelectStatus> = ({
-  _onSelectStatus,
-  _default,
-}) => (
-  <Box w={40}>
-    <Heading as="h4" size="sm" pb={2}>
-      Status
-    </Heading>
-    <Select
-      defaultValue={_default.value || undefined}
-      onChange={(e) =>
-        _onSelectStatus(e.target.value as MediaListStatus | null | undefined)
-      }
-    >
-      {statusesOptions.map((status) => (
-        <option key={status.value} value={status.value}>
-          {status.label}
-        </option>
-      ))}
-    </Select>
-  </Box>
-);
-
 interface ISelectScore {
   _onSelectScore: (score: Maybe<number> | undefined) => void;
   _default: Maybe<number> | undefined;
@@ -260,7 +204,7 @@ export const SelectScore: React.FC<ISelectScore> = ({
     <Select
       defaultValue={_default || 0}
       onChange={(e) =>
-        _onSelectScore((e.target.value as unknown) as Maybe<number> | undefined)
+        _onSelectScore(e.target.value as unknown as Maybe<number> | undefined)
       }
     >
       {getUserScores().map((score) => (
@@ -291,7 +235,7 @@ export const SelectProgress: React.FC<ISelectProgress> = ({
       defaultValue={_default || 0}
       onChange={(e) =>
         _onSelectProgress(
-          (e.target.value as unknown) as Maybe<number> | undefined
+          e.target.value as unknown as Maybe<number> | undefined
         )
       }
     >

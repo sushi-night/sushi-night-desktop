@@ -130,7 +130,7 @@ export const AnimeDetails: React.FC = () => {
                                   ?.nextAiringEpisode as Media["nextAiringEpisode"],
                                 data?.Media?.episodes
                               )}
-                              _onDelete={() => {
+                              _onUpdate={() => {
                                 onClose();
                                 refetch();
                               }}
