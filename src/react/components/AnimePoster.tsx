@@ -1,7 +1,7 @@
 import { Image } from "@chakra-ui/image";
 import { Badge, Box, Flex, Spacer, Text } from "@chakra-ui/layout";
 import { Tooltip } from "@chakra-ui/tooltip";
-import React from "react";
+import * as React from "react";
 import { useHistory } from "react-router";
 import {
   SearchQueryAnimeResult,
@@ -51,7 +51,7 @@ interface IAnimePosterHome {
   anime: Maybe<{ __typename?: "Media" } & MediaFragment>;
 }
 
-export const AnimePosterFromSearch: React.FC<IAnimePosterFromSearch> = ({
+const _AnimePosterFromSearch: React.FC<IAnimePosterFromSearch> = ({
   anime,
   _onClick,
 }) => {
@@ -93,7 +93,7 @@ export const AnimePosterFromSearch: React.FC<IAnimePosterFromSearch> = ({
   );
 };
 //TODO: Define a colorScheme for each format
-export const AnimePosterFromRecomms: React.FC<IAnimePosterFromRecomms> = ({
+export const _AnimePosterFromRecomms: React.FC<IAnimePosterFromRecomms> = ({
   anime,
 }) => {
   const { setAnimeId } = useAnimeState();
@@ -132,7 +132,7 @@ export const AnimePosterFromRecomms: React.FC<IAnimePosterFromRecomms> = ({
   );
 };
 
-export const AnimePosterInProgress: React.FC<IAnimePosterInProgress> = ({
+export const _AnimePosterInProgress: React.FC<IAnimePosterInProgress> = ({
   anime,
 }) => {
   const { setAnimeId } = useAnimeState();
@@ -188,7 +188,7 @@ export const AnimePosterInProgress: React.FC<IAnimePosterInProgress> = ({
   );
 };
 
-export const AnimePosterHome: React.FC<IAnimePosterHome> = ({ anime }) => {
+export const _AnimePosterHome: React.FC<IAnimePosterHome> = ({ anime }) => {
   const { setAnimeId } = useAnimeState();
   const { push } = useHistory();
 
@@ -238,63 +238,84 @@ export const AnimePosterHome: React.FC<IAnimePosterHome> = ({ anime }) => {
 };
 
 interface IAnimePosterFromList {
-  anime: Maybe<{ __typename?: "MediaList" } & MediaListEntryFragment>;
+  anime:
+    | Maybe<{ __typename?: "MediaList" } & MediaListEntryFragment>
+    | undefined;
 }
 
-export const AnimePosterFromList: React.FC<IAnimePosterFromList> = ({
-  anime,
-}) => {
+const _AnimePosterFromList: React.FC<IAnimePosterFromList> = ({ anime }) => {
   const { setAnimeId } = useAnimeState();
   const { push } = useHistory();
 
-  return (
-    <Box
-      w={32}
-      bg="blackAlpha.600"
-      shadow="lg"
-      rounded="md"
-      overflow="hidden"
-      cursor="pointer"
-      pos="relative"
-      onClick={() => {
-        setAnimeId(anime!.mediaId);
-        push("/w/animeDetails");
-      }}
-    >
-      <Box pos="absolute" alignItems="flex-end" right={1}>
-        <Badge
-          textAlign="center"
-          variant="solid"
-          colorScheme="teal"
-          alignSelf="flex-end"
-          rounded="lg"
-        >
-          {`${anime?.media?.startDate?.year + " " + anime?.media?.format}`}
-        </Badge>
-      </Box>
-      <Box>
-        <Tooltip placement="bottom" label={anime?.media?.title?.userPreferred}>
-          <Box>
-            <Image
-              src={anime!.media?.coverImage?.extraLarge || ""}
-              alt="avatar"
-              fit="cover"
-              w={32}
-              h={48}
-            />
-            <Text fontSize={16} textAlign="center" w="full" noOfLines={1}>
-              {anime!.media?.title?.userPreferred}
-            </Text>
-            <Flex>
-              <Text p={1}>
-                {`${anime?.progress + "/" + (anime?.media?.episodes || "?")}`}
+  if (!anime) return null;
+  else {
+    return (
+      <Box
+        w={32}
+        bg="blackAlpha.600"
+        shadow="lg"
+        rounded="md"
+        overflow="hidden"
+        cursor="pointer"
+        pos="relative"
+        onClick={() => {
+          setAnimeId(anime!.mediaId);
+          push("/w/animeDetails");
+        }}
+      >
+        <Box pos="absolute" alignItems="flex-end" right={1}>
+          <Badge
+            textAlign="center"
+            variant="solid"
+            colorScheme="teal"
+            alignSelf="flex-end"
+            rounded="lg"
+          >
+            {`${anime?.media?.startDate?.year + " " + anime?.media?.format}`}
+          </Badge>
+        </Box>
+        <Box>
+          <Tooltip
+            placement="bottom"
+            label={anime?.media?.title?.userPreferred}
+          >
+            <Box>
+              <Image
+                src={anime!.media?.coverImage?.extraLarge || ""}
+                alt="avatar"
+                fit="cover"
+                w={32}
+                h={48}
+              />
+              <Text fontSize={16} textAlign="center" w="full" noOfLines={1}>
+                {anime!.media?.title?.userPreferred}
               </Text>
-              <Spacer/>
-              <Text p={1}>{anime?.score}</Text>
-            </Flex>
-          </Box>
-        </Tooltip>
+              <Flex>
+                <Text p={1}>
+                  {`${anime?.progress + "/" + (anime?.media?.episodes || "?")}`}
+                </Text>
+                <Spacer />
+                <Text p={1}>{anime?.score}</Text>
+              </Flex>
+            </Box>
+          </Tooltip>
+        </Box>
       </Box>
-    </Box>
-  );
+    );
+  }
 };
+
+//improve performance since posters will always have the same
+//props, if _AnimePosterInProgress or _AnimePosterFromList
+//change, rerender them.
+export const AnimePosterFromSearch = React.memo(_AnimePosterFromSearch);
+export const AnimePosterFromRecomms = React.memo(_AnimePosterFromRecomms);
+export const AnimePosterInProgress = React.memo(
+  _AnimePosterInProgress,
+  (prevProps, nextProps) => prevProps.anime === nextProps.anime
+);
+export const AnimePosterHome = React.memo(_AnimePosterHome);
+export const AnimePosterFromList = React.memo(
+  _AnimePosterFromList,
+  (prevProps, nextProps) => prevProps.anime === nextProps.anime
+);

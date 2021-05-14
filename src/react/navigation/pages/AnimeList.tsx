@@ -22,7 +22,7 @@ import {
   Wrap,
   WrapItem,
 } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { AiOutlineSearch } from "react-icons/ai";
 import { AnimePosterFromList } from "../../components/AnimePoster";
 import { SelectCountry } from "../../components/SelectCountryOfOrigin";
@@ -62,108 +62,6 @@ export const AnimeList: React.FC = () => {
       undefined
     );
 
-  //ugliest thing ever, will fix
-  const applyFilters = () => {
-    var list: MediaListGroup_List;
-
-    var results: Array<
-      Maybe<{ __typename?: "MediaList" } & MediaListEntryFragment>
-    > = [];
-
-    if (status) {
-      list = data?.MediaListCollection?.lists?.find(
-        (l) => l?.name === MapMediaListStatus(status)
-      );
-    }
-
-    if (searchQuery) {
-      if (list) {
-        if (list.entries) {
-          for (let a of list.entries) {
-            if (a?.media?.title) {
-              for (let title of Array.from(Object.values(a.media.title))) {
-                title = title?.toLowerCase();
-                if (title?.includes(searchQuery)) {
-                  results.push(a);
-                  break;
-                }
-              }
-            }
-          }
-        }
-      } else {
-        data?.MediaListCollection?.lists?.forEach((_l) => {
-          if (_l?.entries) {
-            for (let a of _l.entries) {
-              if (a?.media?.title) {
-                for (let title of Array.from(Object.values(a.media.title))) {
-                  title = title?.toLowerCase();
-                  if (title?.includes(searchQuery)) {
-                    results.push(a);
-                    break;
-                  }
-                }
-              }
-            }
-          }
-        });
-      }
-    }
-
-    if (searchFormat) {
-      results = results?.filter((r) => r?.media?.format === searchFormat);
-    }
-
-    if (searchYear) {
-      results = results?.filter(
-        (r) =>
-          r?.media?.startDate?.year &&
-          r?.media?.startDate?.year === parseInt(searchYear)
-      );
-    }
-
-    if (country) {
-      results = results?.filter((r) => r?.media?.countryOfOrigin === country);
-    }
-
-    if (genres.length) {
-      results = results?.filter((r) => r?.media?.genres === genres);
-    }
-
-    let mockMediaCollection: MediaListCollectionQuery["MediaListCollection"] = {
-      lists: [],
-    };
-
-    data?.MediaListCollection?.lists?.forEach((l) =>
-      mockMediaCollection?.lists?.push({
-        isCompletedList: l?.isCompletedList,
-        name: l?.name,
-        entries: [],
-      })
-    );
-
-    let mockList: MediaListGroup_List = {
-      isCompletedList: list?.isCompletedList,
-      name: list?.name,
-      entries: [],
-    };
-
-    results?.forEach((r) => {
-      if (!list) {
-        mockMediaCollection?.lists
-          ?.find((l) => l?.name === MapMediaListStatus(r?.status))
-          ?.entries?.push(r);
-      } else {
-        mockList?.entries?.push(r);
-      }
-    });
-
-    if (list) {
-      setFilteredLists({ lists: [mockList] });
-    } else if (mockMediaCollection) {
-      setFilteredLists({ lists: mockMediaCollection.lists });
-    }
-  };
   const { data, loading, error } = useMediaListCollectionQuery({
     variables: {
       userId: authenticated!,
@@ -187,10 +85,137 @@ export const AnimeList: React.FC = () => {
     };
   }, [data]);
 
+  //memoize deps and fire only if they have changed
+  const applyFilters = useCallback(() => {
+    if (data?.MediaListCollection?.lists?.length) {
+      var list: MediaListGroup_List;
+
+      var results: Array<
+        Maybe<{ __typename?: "MediaList" } & MediaListEntryFragment>
+      > = [];
+
+      if (status) {
+        list = data?.MediaListCollection?.lists?.find(
+          (l) => l?.name === MapMediaListStatus(status)
+        );
+      }
+
+      if (searchQuery !== "") {
+        if (list) {
+          if (list.entries) {
+            for (let a of list.entries) {
+              if (a?.media?.title) {
+                for (let title of Array.from(Object.values(a.media.title))) {
+                  title = title?.toLowerCase();
+                  if (title?.includes(searchQuery)) {
+                    results.push(a);
+                    break;
+                  }
+                }
+              }
+            }
+          }
+        } else {
+          data?.MediaListCollection?.lists?.forEach((_l) => {
+            if (_l?.entries) {
+              for (let a of _l.entries) {
+                if (a?.media?.title) {
+                  for (let title of Array.from(Object.values(a.media.title))) {
+                    title = title?.toLowerCase();
+                    if (title?.includes(searchQuery)) {
+                      results.push(a);
+                      break;
+                    }
+                  }
+                }
+              }
+            }
+          });
+        }
+      } else {
+        data.MediaListCollection.lists.forEach((l) => {
+          if (l?.entries) results = results.concat(l.entries);
+        });
+      }
+
+      if (searchFormat) {
+        results = results?.filter((r) => r?.media?.format === searchFormat);
+      }
+
+      if (searchYear) {
+        results = results?.filter(
+          (r) =>
+            r?.media?.startDate?.year &&
+            r?.media?.startDate?.year === parseInt(searchYear)
+        );
+      }
+
+      if (country) {
+        results = results?.filter((r) => r?.media?.countryOfOrigin === country);
+      }
+
+      if (genres.length) {
+        results = results?.filter((r) =>
+          genres.every((g) => r?.media?.genres?.includes(g))
+        );
+      }
+
+      let mockMediaCollection: MediaListCollectionQuery["MediaListCollection"] =
+        {
+          lists: [],
+        };
+
+      data?.MediaListCollection?.lists?.forEach((l) =>
+        mockMediaCollection?.lists?.push({
+          isCompletedList: l?.isCompletedList,
+          name: l?.name,
+          entries: [],
+        })
+      );
+
+      let mockList: MediaListGroup_List = {
+        isCompletedList: list?.isCompletedList,
+        name: list?.name,
+        entries: [],
+      };
+
+      results?.forEach((r) => {
+        if (!list) {
+          mockMediaCollection?.lists
+            ?.find((l) => l?.name === MapMediaListStatus(r?.status))
+            ?.entries?.push(r);
+        } else {
+          mockList?.entries?.push(r);
+        }
+      });
+
+      if (list) {
+        setFilteredLists({ lists: [mockList] });
+      } else if (mockMediaCollection) {
+        setFilteredLists({ lists: mockMediaCollection.lists });
+      }
+    }
+  }, [
+    searchQuery,
+    genres,
+    country,
+    searchFormat,
+    status,
+    searchYear,
+    data?.MediaListCollection?.lists,
+  ]);
+
   useEffect(() => {
-    (searchFormat || searchYear || genres.length || country || status) &&
-      applyFilters();
-  }, [genres, country, searchFormat, status, searchYear]);
+    applyFilters();
+  }, [
+    searchQuery,
+    genres,
+    country,
+    searchFormat,
+    status,
+    searchYear,
+    applyFilters,
+  ]);
 
   return (
     <Box pb={8}>
@@ -209,9 +234,6 @@ export const AnimeList: React.FC = () => {
                   placeholder="Filter"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  onKeyPress={(e) => {
-                    if (e.key === "Enter") applyFilters();
-                  }}
                 />
               </InputGroup>
               <Box>
@@ -268,7 +290,7 @@ export const AnimeList: React.FC = () => {
           </GridItem>
           <GridItem colSpan={4}>
             <Flex>
-              <Wrap pt={4} px={24}>
+              <Wrap pt={4} pb={2}>
                 {genres.map((genre) => (
                   <WrapItem key={genre}>
                     <HStack spacing={4}>
@@ -291,7 +313,7 @@ export const AnimeList: React.FC = () => {
               </Wrap>
             </Flex>
             <Flex>
-              {loading ? (
+              {loading && !filteredLists?.lists ? (
                 <Spinner />
               ) : (
                 <Box>
