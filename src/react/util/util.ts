@@ -13,13 +13,18 @@ import {
   StudioEdge,
 } from "../generated/graphql";
 
-export const MapMediaListStatus = (status?: MediaListStatus): string => {
+export const MapMediaListStatus = (
+  status?: MediaListStatus | Maybe<MediaListStatus> | undefined
+): string => {
   switch (status) {
     case MediaListStatus.Current: {
       return "Watching";
     }
+    case undefined: {
+      return "";
+    }
     default: {
-      return mapEnums(status);
+      return mapEnums(status?.toString());
     }
   }
 };

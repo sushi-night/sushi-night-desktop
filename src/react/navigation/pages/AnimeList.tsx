@@ -30,11 +30,15 @@ import { SelectFormat } from "../../components/SelectFormat";
 import { SelectGenres } from "../../components/SelectGenres";
 import { SelectStatus } from "../../components/SelectStatus";
 import { SelectYear } from "../../components/SelectYear";
+import { MediaListGroup_List } from "../../generated/custom";
 import {
+  Maybe,
   MediaFormat,
+  MediaListCollectionQuery,
   MediaListStatus,
   MediaType,
   useMediaListCollectionQuery,
+  MediaListEntryFragment,
 } from "../../generated/graphql";
 import {
   MapMediaListStatus,
@@ -46,13 +50,120 @@ import { useAuthStore } from "../../zustand";
 export const AnimeList: React.FC = () => {
   const { authenticated } = useAuthStore();
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const [searchFormat, setSearchFormat] = useState<MediaFormat | undefined>();
-  const [searchYear, setSearchYear] = useState<string | undefined>();
+  const [searchFormat, setSearchFormat] = useState<MediaFormat>();
+  const [searchYear, setSearchYear] = useState<string>();
   const [status, setStatus] = useState<MediaListStatus | null | undefined>();
   const [genres, setGenres] = useState<string[]>([]);
-  const [country, setCountry] = useState<string | undefined>();
-  const [listsWTotal, setListsWTotal] = useState<MediaListCollectionTotal>();
+  const [country, setCountry] = useState<string>();
+  const [listsWTotal, setListsWTotal] =
+    useState<MediaListCollectionTotal | undefined>(undefined);
+  const [filteredLists, setFilteredLists] =
+    useState<MediaListCollectionQuery["MediaListCollection"] | undefined>(
+      undefined
+    );
 
+  //ugliest thing ever, will fix
+  const applyFilters = () => {
+    var list: MediaListGroup_List;
+
+    var results: Array<
+      Maybe<{ __typename?: "MediaList" } & MediaListEntryFragment>
+    > = [];
+
+    if (status) {
+      list = data?.MediaListCollection?.lists?.find(
+        (l) => l?.name === MapMediaListStatus(status)
+      );
+    }
+
+    if (searchQuery) {
+      if (list) {
+        if (list.entries) {
+          for (let a of list.entries) {
+            if (a?.media?.title) {
+              for (let title of Array.from(Object.values(a.media.title))) {
+                title = title?.toLowerCase();
+                if (title?.includes(searchQuery)) {
+                  results.push(a);
+                  break;
+                }
+              }
+            }
+          }
+        }
+      } else {
+        data?.MediaListCollection?.lists?.forEach((_l) => {
+          if (_l?.entries) {
+            for (let a of _l.entries) {
+              if (a?.media?.title) {
+                for (let title of Array.from(Object.values(a.media.title))) {
+                  title = title?.toLowerCase();
+                  if (title?.includes(searchQuery)) {
+                    results.push(a);
+                    break;
+                  }
+                }
+              }
+            }
+          }
+        });
+      }
+    }
+
+    if (searchFormat) {
+      results = results?.filter((r) => r?.media?.format === searchFormat);
+    }
+
+    if (searchYear) {
+      results = results?.filter(
+        (r) =>
+          r?.media?.startDate?.year &&
+          r?.media?.startDate?.year === parseInt(searchYear)
+      );
+    }
+
+    if (country) {
+      results = results?.filter((r) => r?.media?.countryOfOrigin === country);
+    }
+
+    if (genres.length) {
+      results = results?.filter((r) => r?.media?.genres === genres);
+    }
+
+    let mockMediaCollection: MediaListCollectionQuery["MediaListCollection"] = {
+      lists: [],
+    };
+
+    data?.MediaListCollection?.lists?.forEach((l) =>
+      mockMediaCollection?.lists?.push({
+        isCompletedList: l?.isCompletedList,
+        name: l?.name,
+        entries: [],
+      })
+    );
+
+    let mockList: MediaListGroup_List = {
+      isCompletedList: list?.isCompletedList,
+      name: list?.name,
+      entries: [],
+    };
+
+    results?.forEach((r) => {
+      if (!list) {
+        mockMediaCollection?.lists
+          ?.find((l) => l?.name === MapMediaListStatus(r?.status))
+          ?.entries?.push(r);
+      } else {
+        mockList?.entries?.push(r);
+      }
+    });
+
+    if (list) {
+      setFilteredLists({ lists: [mockList] });
+    } else if (mockMediaCollection) {
+      setFilteredLists({ lists: mockMediaCollection.lists });
+    }
+  };
   const { data, loading, error } = useMediaListCollectionQuery({
     variables: {
       userId: authenticated!,
@@ -67,6 +178,7 @@ export const AnimeList: React.FC = () => {
     if (isMounted) {
       if (data) {
         setListsWTotal(getMediaListTotals(data.MediaListCollection));
+        setFilteredLists(data.MediaListCollection);
       }
     }
 
@@ -74,6 +186,11 @@ export const AnimeList: React.FC = () => {
       isMounted = false;
     };
   }, [data]);
+
+  useEffect(() => {
+    (searchFormat || searchYear || genres.length || country || status) &&
+      applyFilters();
+  }, [genres, country, searchFormat, status, searchYear]);
 
   return (
     <Box pb={8}>
@@ -92,6 +209,9 @@ export const AnimeList: React.FC = () => {
                   placeholder="Filter"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyPress={(e) => {
+                    if (e.key === "Enter") applyFilters();
+                  }}
                 />
               </InputGroup>
               <Box>
@@ -176,12 +296,21 @@ export const AnimeList: React.FC = () => {
               ) : (
                 <Box>
                   {Object.values(MediaListStatus).map((status) => (
-                    <Box>
+                    <Box
+                      key={status}
+                      hidden={
+                        filteredLists?.lists?.find(
+                          (l) => l?.name === MapMediaListStatus(status)
+                        )?.entries?.length
+                          ? false
+                          : true
+                      }
+                    >
                       <Heading as="h4" size="lg" pb={4}>
                         {MapMediaListStatus(status)}
                       </Heading>
                       <SimpleGrid columns={5} padding={2} spacing={5}>
-                        {data?.MediaListCollection?.lists
+                        {filteredLists?.lists
                           ?.find((l) => l?.name === MapMediaListStatus(status))
                           ?.entries?.map((anime) => (
                             <AnimePosterFromList
@@ -197,7 +326,7 @@ export const AnimeList: React.FC = () => {
             </Flex>
           </GridItem>
           <GridItem colSpan={1}>
-            <Flex pt={6} pr={1}>
+            <Flex pt={6}>
               <VStack>
                 <SelectFormat
                   _onSelect={(format: string) => {
@@ -214,7 +343,7 @@ export const AnimeList: React.FC = () => {
                   _placeholder="Any"
                   _onSelectStatus={(
                     _status: MediaListStatus | null | undefined
-                  ) => setStatus(undefined)}
+                  ) => setStatus(_status)}
                 />
                 <SelectGenres
                   genresOnly

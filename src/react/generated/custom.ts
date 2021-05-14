@@ -6,6 +6,8 @@ import {
   FuzzyDate,
   AiringSchedule,
   MediaList,
+  MediaListGroup,
+  MediaListEntryFragment,
 } from "./graphql";
 
 export type SearchQueryAnimeResult = { __typename?: "Media" } & Pick<
@@ -59,3 +61,16 @@ export type AnimeInProgressQueryR = Maybe<
       >;
     }
 >;
+
+export type MediaListGroup_List =
+  | Maybe<
+      { __typename?: "MediaListGroup" } & Pick<
+        MediaListGroup,
+        "name" | "isCustomList"
+      > & { isCompletedList: MediaListGroup["isSplitCompletedList"] } & {
+          entries?: Maybe<
+            Array<Maybe<{ __typename?: "MediaList" } & MediaListEntryFragment>>
+          >;
+        }
+    >
+  | undefined;
